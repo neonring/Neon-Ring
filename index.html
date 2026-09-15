@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<link rel="manifest" href="/Neon-Ring/manifest.json">
+    <link rel="manifest" href="manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Sferis: Halka Yolculuğu</title>
     <style>
         :root {
-            --bg-dark: #070913;
-            --primary: #00e5ff;
-            --primary-glow: rgba(0, 229, 255, 0.3);
-            --secondary: #ff3366;
-            --accent: #ffb703;
-            --card-bg: rgba(14, 20, 36, 0.82);
-            --card-border: rgba(255, 255, 255, 0.08);
-            --text-main: #f0f4fc;
-            --text-dim: #7988a3;
+            --bg-dark: #04060b;
+            --primary: #00f0ff;
+            --primary-glow: rgba(0, 240, 255, 0.35);
+            --secondary: #ff0055;
+            --accent: #ffd700;
+            --card-bg: rgba(10, 15, 28, 0.88);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --text-main: #f4f7fc;
+            --text-dim: #6c7d9b;
         }
 
         * {
@@ -53,7 +53,6 @@
             z-index: 1;
         }
 
-        /* ━━━━━━━━ EKRAN YÖNETİMİ ━━━━━━━━ */
         .screen {
             position: absolute;
             top: 0;
@@ -81,9 +80,9 @@
             background: var(--card-bg);
             border: 1px solid var(--card-border);
             border-radius: 18px;
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         .header-bar {
@@ -98,10 +97,10 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
             padding: 6px 14px;
             border-radius: 20px;
-            border: 1px solid rgba(255, 183, 3, 0.3);
+            border: 1px solid rgba(255, 215, 0, 0.3);
             font-weight: 800;
             color: var(--accent);
             font-size: 14px;
@@ -122,17 +121,15 @@
             outline: none;
         }
 
-        .icon-btn:active {
-            transform: scale(0.92);
-        }
+        .icon-btn:active { transform: scale(0.92); }
 
         .btn-primary {
-            background: linear-gradient(135deg, #00e5ff 0%, #0077ff 100%);
+            background: linear-gradient(135deg, #00f0ff 0%, #0066ff 100%);
             color: #030814;
             border: none;
             border-radius: 20px;
-            padding: 15px 24px;
-            font-size: 16px;
+            padding: 14px 24px;
+            font-size: 15px;
             font-weight: 800;
             letter-spacing: 0.5px;
             box-shadow: 0 6px 20px var(--primary-glow);
@@ -145,17 +142,15 @@
             text-transform: uppercase;
         }
 
-        .btn-primary:active {
-            transform: scale(0.96);
-        }
+        .btn-primary:active { transform: scale(0.96); }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.06);
+            background: rgba(255, 255, 255, 0.05);
             color: #fff;
             border: 1px solid var(--card-border);
             border-radius: 16px;
-            padding: 12px 20px;
-            font-size: 15px;
+            padding: 10px 16px;
+            font-size: 14px;
             font-weight: 700;
             cursor: pointer;
             display: flex;
@@ -164,366 +159,92 @@
             gap: 6px;
         }
 
-        .btn-secondary:active {
-            transform: scale(0.96);
-            background: rgba(255, 255, 255, 0.12);
-        }
+        .btn-secondary:active { transform: scale(0.96); background: rgba(255, 255, 255, 0.1); }
 
-        /* ━━━━━━━━ ANA MENÜ ━━━━━━━━ */
-        .brand-box {
-            text-align: center;
-            margin-top: 8vh;
-        }
-
+        /* ANA MENÜ */
+        .brand-box { text-align: center; margin-top: 4vh; }
         .brand-title {
-            font-size: 38px;
-            font-weight: 900;
-            letter-spacing: 4px;
-            background: linear-gradient(180deg, #ffffff 30%, var(--primary) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 4px;
+            font-size: 38px; font-weight: 900; letter-spacing: 4px;
+            background: linear-gradient(180deg, #ffffff 20%, var(--primary) 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 2px;
         }
+        .brand-sub { font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: var(--text-dim); font-weight: 700; }
 
-        .brand-sub {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--text-dim);
-            font-weight: 700;
-        }
-
-        .mode-selection-card {
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
-        .mode-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
+        .mode-selection-card { padding: 14px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
+        .mode-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .mode-card {
-            padding: 14px 10px;
-            border-radius: 14px;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--card-border);
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s;
+            padding: 12px 8px; border-radius: 14px; background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--card-border); text-align: center; cursor: pointer; transition: all 0.2s;
         }
+        .mode-card:active { transform: scale(0.95); background: rgba(0, 240, 255, 0.08); border-color: var(--primary); }
+        .mode-icon { font-size: 22px; margin-bottom: 2px; }
+        .mode-title { font-size: 12px; font-weight: 800; letter-spacing: 0.5px; }
+        .mode-desc { font-size: 9px; color: var(--text-dim); margin-top: 2px; }
 
-        .mode-card:active {
-            transform: scale(0.95);
-            background: rgba(0, 229, 255, 0.1);
-            border-color: var(--primary);
-        }
-
-        .mode-icon {
-            font-size: 24px;
-            margin-bottom: 4px;
-        }
-
-        .mode-title {
-            font-size: 13px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-
-        .mode-desc {
-            font-size: 10px;
-            color: var(--text-dim);
-            margin-top: 2px;
-        }
-
-        /* ━━━━━━━━ HUD & ÜST COMBO ━━━━━━━━ */
+        /* HUD */
         #hud-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 5;
-            pointer-events: none;
-            display: none;
-            padding: calc(env(safe-area-inset-top, 20px) + 8px) 16px;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 5; pointer-events: none; display: none; padding: calc(env(safe-area-inset-top, 20px) + 8px) 16px;
         }
-
-        .hud-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            width: 100%;
-        }
-
-        .hud-box {
-            background: rgba(7, 9, 19, 0.65);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 6px 12px;
-            border-radius: 12px;
-            backdrop-filter: blur(8px);
-        }
-
-        .hud-lbl {
-            font-size: 9px;
-            color: var(--text-dim);
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-
-        .hud-val {
-            font-size: 18px;
-            font-weight: 900;
-            color: #fff;
-        }
-
-        .level-progress-bar {
-            width: 100px;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            overflow: hidden;
-            margin: 4px 0;
-        }
-
-        .level-progress-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
-            transition: width 0.15s ease-out;
-        }
-
+        .hud-content { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
+        .hud-box { background: rgba(4, 6, 11, 0.75); border: 1px solid rgba(255, 255, 255, 0.08); padding: 6px 12px; border-radius: 12px; backdrop-filter: blur(8px); }
+        .hud-lbl { font-size: 9px; color: var(--text-dim); font-weight: 800; letter-spacing: 0.5px; }
+        .hud-val { font-size: 18px; font-weight: 900; color: #fff; }
+        .level-progress-bar { width: 100px; height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; overflow: hidden; margin: 4px 0; }
+        .level-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--accent)); transition: width 0.15s ease-out; }
         .hud-combo-tag {
-            position: absolute;
-            top: calc(env(safe-area-inset-top, 20px) + 55px);
-            right: 16px;
-            font-size: 12px;
-            font-weight: 900;
-            color: var(--accent);
-            background: rgba(255, 183, 3, 0.15);
-            border: 1px solid rgba(255, 183, 3, 0.3);
-            padding: 3px 8px;
-            border-radius: 8px;
-            opacity: 0;
-            transform: translateY(-4px);
-            transition: opacity 0.2s, transform 0.2s;
+            position: absolute; top: calc(env(safe-area-inset-top, 20px) + 55px); right: 16px;
+            font-size: 12px; font-weight: 900; color: var(--accent); background: rgba(255, 215, 0, 0.15);
+            border: 1px solid rgba(255, 215, 0, 0.3); padding: 3px 8px; border-radius: 8px; opacity: 0; transition: all 0.2s;
         }
-
-        .hud-combo-tag.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .hud-combo-tag.active { opacity: 1; transform: translateY(0); }
 
         .theme-banner {
-            position: absolute;
-            top: calc(env(safe-area-inset-top, 20px) + 60px);
-            left: 50%;
-            transform: translateX(-50%) translateY(-10px);
-            background: rgba(7, 9, 19, 0.85);
-            border: 1px solid var(--primary);
-            padding: 6px 18px;
-            border-radius: 16px;
-            font-size: 12px;
-            font-weight: 800;
-            color: var(--primary);
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            box-shadow: 0 4px 15px var(--primary-glow);
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            position: absolute; top: calc(env(safe-area-inset-top, 20px) + 60px); left: 50%;
+            transform: translateX(-50%) translateY(-10px); background: rgba(4, 6, 11, 0.9);
+            border: 1px solid var(--primary); padding: 6px 18px; border-radius: 16px; font-size: 11px;
+            font-weight: 800; color: var(--primary); letter-spacing: 1px; text-transform: uppercase;
+            box-shadow: 0 4px 15px var(--primary-glow); opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
+        .theme-banner.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-        .theme-banner.show {
-            opacity: 1;
-            transform: translateX(-50%) translateY(0);
-        }
-
-        /* ━━━━━━━━ LEVEL SEÇİM EKRANI ━━━━━━━━ */
-        .level-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            padding: 10px 0;
-        }
-
+        /* LEVEL GRID */
+        .level-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 10px 0; }
         .level-node {
-            aspect-ratio: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--card-border);
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: 800;
-            cursor: pointer;
-            position: relative;
+            aspect-ratio: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); border-radius: 14px; font-size: 15px; font-weight: 800; cursor: pointer;
         }
+        .level-node.completed { border-color: var(--primary); color: var(--primary); background: rgba(0, 240, 255, 0.05); }
+        .level-node.locked { opacity: 0.3; cursor: not-allowed; }
+        .level-node.current { border-color: var(--accent); box-shadow: 0 0 12px rgba(255, 215, 0, 0.3); color: var(--accent); }
 
-        .level-node.completed {
-            border-color: var(--primary);
-            color: var(--primary);
-            background: rgba(0, 229, 255, 0.05);
-        }
-
-        .level-node.locked {
-            opacity: 0.35;
-            cursor: not-allowed;
-        }
-
-        .level-node.current {
-            border-color: var(--accent);
-            box-shadow: 0 0 12px rgba(255, 183, 3, 0.3);
-            color: var(--accent);
-        }
-
-        /* ━━━━━━━━ MAĞAZA ━━━━━━━━ */
-        .shop-tabs {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding: 8px 0 14px 0;
-            border-bottom: 1px solid var(--card-border);
-        }
-
+        /* MAĞAZA & SEKME */
+        .shop-tabs { display: flex; gap: 6px; overflow-x: auto; padding: 6px 0 12px 0; border-bottom: 1px solid var(--card-border); }
         .shop-tabs::-webkit-scrollbar { display: none; }
+        .shop-tab { padding: 5px 12px; border-radius: 10px; background: rgba(255, 255, 255, 0.04); font-size: 11px; font-weight: 700; white-space: nowrap; color: var(--text-dim); cursor: pointer; }
+        .shop-tab.active { background: var(--primary); color: #030814; }
 
-        .shop-tab {
-            padding: 6px 14px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.05);
-            font-size: 12px;
-            font-weight: 700;
-            white-space: nowrap;
-            color: var(--text-dim);
-            cursor: pointer;
-        }
+        .shop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 12px; }
+        .shop-card { padding: 12px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; cursor: pointer; border: 1px solid var(--card-border); border-radius: 14px; background: rgba(255, 255, 255, 0.02); }
+        .shop-card.selected { border-color: var(--primary); box-shadow: 0 0 12px var(--primary-glow); }
+        .shop-preview { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        .shop-item-name { font-size: 12px; font-weight: 700; }
+        .shop-item-status { font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.05); }
 
-        .shop-tab.active {
-            background: var(--primary);
-            color: #030814;
-        }
-
-        .shop-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 14px;
-        }
-
-        .shop-card {
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 8px;
-            cursor: pointer;
-            border: 1px solid var(--card-border);
-            border-radius: 14px;
-            background: rgba(255, 255, 255, 0.03);
-        }
-
-        .shop-card.selected {
-            border-color: var(--primary);
-            box-shadow: 0 0 15px var(--primary-glow);
-        }
-
-        .shop-preview {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        .shop-item-name {
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .shop-item-status {
-            font-size: 11px;
-            font-weight: 800;
-            padding: 3px 8px;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.06);
-        }
-
-        /* ━━━━━━━━ AYARLAR VE GÖREVLER ━━━━━━━━ */
-        .modal-body {
-            flex: 1;
-            overflow-y: auto;
-            margin: 16px 0;
-            padding-right: 2px;
-        }
-
+        .modal-body { flex: 1; overflow-y: auto; margin: 12px 0; padding-right: 2px; }
         .modal-body::-webkit-scrollbar { display: none; }
+        .list-stack { display: flex; flex-direction: column; gap: 8px; }
+        .list-row { padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; }
 
-        .list-stack {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .list-row {
-            padding: 14px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .toggle-switch {
-            width: 46px;
-            height: 26px;
-            background: rgba(255, 255, 255, 0.12);
-            border-radius: 13px;
-            position: relative;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
+        .toggle-switch { width: 44px; height: 24px; background: rgba(255, 255, 255, 0.1); border-radius: 12px; position: relative; cursor: pointer; transition: background 0.2s; }
         .toggle-switch.on { background: var(--primary); }
-        .toggle-knob {
-            width: 20px;
-            height: 20px;
-            background: #fff;
-            border-radius: 50%;
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            transition: transform 0.2s;
-        }
+        .toggle-knob { width: 18px; height: 18px; background: #fff; border-radius: 50%; position: absolute; top: 3px; left: 3px; transition: transform 0.2s; }
         .toggle-switch.on .toggle-knob { transform: translateX(20px); }
 
-        /* ━━━━━━━━ SONUÇ PANELLERİ ━━━━━━━━ */
-        .result-card {
-            padding: 24px 18px;
-            text-align: center;
-            margin: auto 0;
-        }
-
-        .result-title {
-            font-size: 28px;
-            font-weight: 900;
-            letter-spacing: 1px;
-            margin-bottom: 4px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin: 18px 0;
-        }
+        .result-card { padding: 22px 16px; text-align: center; margin: auto 0; }
+        .result-title { font-size: 26px; font-weight: 900; letter-spacing: 1px; margin-bottom: 4px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px 0; }
     </style>
 </head>
 <body>
@@ -543,7 +264,7 @@
                 <div class="level-progress-bar" id="hud-progress-wrap">
                     <div class="level-progress-fill" id="hud-progress"></div>
                 </div>
-                <div style="font-size: 12px; margin-top: 2px;" id="hud-hearts">❤️❤️❤️</div>
+                <div style="font-size: 11px; margin-top: 2px;" id="hud-hearts">❤️</div>
             </div>
             <div class="hud-box" style="text-align: right;">
                 <div class="hud-lbl">COIN</div>
@@ -568,7 +289,7 @@
 
         <div>
             <div class="glass-panel mode-selection-card">
-                <div style="font-size: 11px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 2px;">OYUN MODU SEÇİN</div>
+                <div style="font-size: 10px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px;">OYUN MODU</div>
                 <div class="mode-row">
                     <div class="mode-card" onclick="UI.showScreen('level-select-menu')">
                         <div class="mode-icon">🏆</div>
@@ -583,86 +304,119 @@
                 </div>
             </div>
 
-            <div class="glass-panel list-row" style="margin-bottom: 12px; padding: 10px 16px;">
-                <div style="font-size: 12px; font-weight: 700; color: var(--text-dim);">Serbest Rekor: <span id="menu-endless-high" style="color:#fff; font-weight: 900;">0</span></div>
-                <div style="font-size: 12px; font-weight: 700; color: var(--text-dim);">Son Bölüm: <span id="menu-level-indicator" style="color:var(--primary); font-weight: 900;">1</span></div>
+            <div class="glass-panel list-row" style="margin-bottom: 8px; padding: 8px 14px;">
+                <div style="font-size: 11px; font-weight: 700; color: var(--text-dim);">Serbest Rekor: <span id="menu-endless-high" style="color:#fff; font-weight: 900;">0</span></div>
+                <div style="font-size: 11px; font-weight: 700; color: var(--text-dim);">Son Bölüm: <span id="menu-level-indicator" style="color:var(--primary); font-weight: 900;">1</span></div>
             </div>
 
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <button class="btn-secondary" onclick="UI.showScreen('shop-menu')">🛍️ Market</button>
-                <button class="btn-secondary" onclick="UI.showScreen('tasks-menu')">📋 Görevler</button>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 6px;">
+                <button class="btn-secondary" onclick="UI.showScreen('shop-menu')" style="padding: 8px 4px; font-size: 11px;">🛍️ Market</button>
+                <button class="btn-secondary" onclick="UI.showScreen('tasks-menu')" style="padding: 8px 4px; font-size: 11px;">📋 Görev</button>
+                <button class="btn-secondary" onclick="UI.showScreen('achievements-menu')" style="padding: 8px 4px; font-size: 11px;">🏅 Başar</button>
+                <button class="btn-secondary" onclick="UI.showScreen('upgrades-menu')" style="padding: 8px 4px; font-size: 11px;">⚡ Geliştir</button>
             </div>
+            
+            <button class="btn-primary" style="width: 100%; padding: 10px; font-size: 13px;" onclick="SpinWheel.open()">🎡 Günlük Şans Çarkı</button>
         </div>
     </div>
 
-    <!-- 2. LEVEL SEÇİM EKRANI -->
+    <!-- 2. LEVEL SEÇİMİ -->
     <div id="level-select-menu" class="screen">
         <div class="header-bar">
             <button class="icon-btn" onclick="UI.showScreen('main-menu')">‹</button>
-            <div style="font-size: 16px; font-weight: 800;">BÖLÜM SEÇİMİ</div>
+            <div style="font-size: 15px; font-weight: 800;">BÖLÜM SEÇİMİ</div>
             <div style="width: 42px;"></div>
         </div>
-        <div class="modal-body">
-            <div class="level-grid" id="level-grid-container"></div>
-        </div>
+        <div class="modal-body"><div class="level-grid" id="level-grid-container"></div></div>
     </div>
 
-    <!-- 3. GENİŞLETİLMİŞ MAĞAZA -->
+    <!-- 3. MAĞAZA -->
     <div id="shop-menu" class="screen">
         <div class="header-bar">
             <button class="icon-btn" onclick="UI.showScreen('main-menu')">‹</button>
-            <div style="font-size: 16px; font-weight: 800;">KOZMETİK MAĞAZASI</div>
+            <div style="font-size: 15px; font-weight: 800;">MAĞAZA</div>
             <div class="currency-badge">🪙 <span id="shop-coins">0</span></div>
         </div>
         <div class="shop-tabs">
             <div class="shop-tab active" onclick="Shop.setTab('balls', this)">Toplar</div>
             <div class="shop-tab" onclick="Shop.setTab('trails', this)">İzler</div>
             <div class="shop-tab" onclick="Shop.setTab('themes', this)">Temalar</div>
+            <div class="shop-tab" onclick="Shop.setTab('powerups', this)">Güçler</div>
             <div class="shop-tab" onclick="Shop.setTab('badges', this)">Rozetler</div>
         </div>
-        <div class="modal-body">
-            <div class="shop-grid" id="shop-grid-container"></div>
-        </div>
+        <div class="modal-body"><div class="shop-grid" id="shop-grid-container"></div></div>
     </div>
 
-    <!-- 4. GÜNLÜK GÖREVLER -->
+    <!-- 4. DEVAMLI GÜÇLENDİRME (UPGRADES) -->
+    <div id="upgrades-menu" class="screen">
+        <div class="header-bar">
+            <button class="icon-btn" onclick="UI.showScreen('main-menu')">‹</button>
+            <div style="font-size: 15px; font-weight: 800;">KALICI YÜKSELTMELER</div>
+            <div class="currency-badge">🪙 <span id="upgrade-coins">0</span></div>
+        </div>
+        <div class="modal-body"><div class="list-stack" id="upgrades-container"></div></div>
+    </div>
+
+    <!-- 5. 20 ADET GÖREVLER -->
     <div id="tasks-menu" class="screen">
         <div class="header-bar">
             <button class="icon-btn" onclick="UI.showScreen('main-menu')">‹</button>
-            <div style="font-size: 16px; font-weight: 800;">GÜNLÜK GÖREVLER</div>
+            <div style="font-size: 15px; font-weight: 800;">GÖREVLER (20 ADET)</div>
             <div style="width: 42px;"></div>
         </div>
-        <div class="modal-body">
-            <div class="list-stack" id="task-container"></div>
+        <div class="modal-body"><div class="list-stack" id="task-container"></div></div>
+    </div>
+
+    <!-- 6. 20 ADET BAŞARIMLAR -->
+    <div id="achievements-menu" class="screen">
+        <div class="header-bar">
+            <button class="icon-btn" onclick="UI.showScreen('main-menu')">‹</button>
+            <div style="font-size: 15px; font-weight: 800;">BAŞARIMLAR (20 ADET)</div>
+            <div style="width: 42px;"></div>
+        </div>
+        <div class="modal-body"><div class="list-stack" id="achievement-container"></div></div>
+    </div>
+
+    <!-- 7. ŞANS ÇARKI -->
+    <div id="spin-menu" class="screen">
+        <div class="header-bar">
+            <button class="icon-btn" onclick="UI.showScreen('main-menu')">‹</button>
+            <div style="font-size: 15px; font-weight: 800;">ŞANS ÇARKI</div>
+            <div style="width: 42px;"></div>
+        </div>
+        <div class="modal-body" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 18px;">
+            <div style="font-size: 55px;">🎡</div>
+            <div id="spin-result-text" style="font-size: 14px; font-weight: 700; color: var(--accent);">Her gün 1 kez ücretsiz çevir ve sürpriz ödülü kap!</div>
+            <button class="btn-primary" id="spin-btn" onclick="SpinWheel.spin()" style="width: 80%;">ÇARKI ÇEVİR</button>
         </div>
     </div>
 
-    <!-- 5. AYARLAR -->
+    <!-- 8. AYARLAR -->
     <div id="settings-menu" class="screen">
         <div class="header-bar">
             <button class="icon-btn" onclick="UI.showScreen('main-menu')">‹</button>
-            <div style="font-size: 16px; font-weight: 800;">AYARLAR</div>
+            <div style="font-size: 15px; font-weight: 800;">AYARLAR</div>
             <div style="width: 42px;"></div>
         </div>
         <div class="modal-body">
             <div class="list-stack">
                 <div class="glass-panel list-row">
-                    <div style="font-size: 14px; font-weight: 700;">🔊 Sakin Ses Efektleri</div>
+                    <div style="font-size: 13px; font-weight: 700;">🔊 Ses Efektleri</div>
                     <div class="toggle-switch" id="toggle-sfx" onclick="Settings.toggle('sfx')"><div class="toggle-knob"></div></div>
                 </div>
                 <div class="glass-panel list-row">
-                    <div style="font-size: 14px; font-weight: 700;">🎵 Ortam Ambiyansı</div>
+                    <div style="font-size: 13px; font-weight: 700;">🎵 Ortam Ambiyansı</div>
                     <div class="toggle-switch" id="toggle-bgm" onclick="Settings.toggle('bgm')"><div class="toggle-knob"></div></div>
                 </div>
                 <div class="glass-panel list-row">
-                    <div style="font-size: 14px; font-weight: 700;">📳 Titreşim Geri Bildirimi</div>
+                    <div style="font-size: 13px; font-weight: 700;">📳 Titreşim</div>
                     <div class="toggle-switch" id="toggle-vibrate" onclick="Settings.toggle('vibration')"><div class="toggle-knob"></div></div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- 6. LEVEL TAMAMLANDI -->
+    <!-- 9. LEVEL TAMAMLANDI -->
     <div id="victory-screen" class="screen">
         <div></div>
         <div class="glass-panel result-card">
@@ -684,7 +438,7 @@
         <div></div>
     </div>
 
-    <!-- 7. GAME OVER -->
+    <!-- 10. GAME OVER -->
     <div id="gameover-screen" class="screen">
         <div></div>
         <div class="glass-panel result-card">
@@ -709,18 +463,17 @@
 
 <script>
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   1. SES SİSTEMİ
+   1. SES & HAPTIC
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 const Sound = {
-    ctx: null,
-    bgmGain: null,
+    ctx: null, bgmGain: null,
     init() {
         if (!this.ctx) {
             const AudioCtx = window.AudioContext || window.webkitAudioContext;
             this.ctx = new AudioCtx();
         }
     },
-    playSoftTone(freq, duration = 0.12, gainLvl = 0.12) {
+    playTone(freq, duration = 0.12, gainLvl = 0.12) {
         if (!Storage.data.settings.sfx || !this.ctx) return;
         try {
             const osc = this.ctx.createOscillator();
@@ -729,64 +482,42 @@ const Sound = {
             osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
             gain.gain.setValueAtTime(gainLvl, this.ctx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
-            osc.connect(gain);
-            gain.connect(this.ctx.destination);
-            osc.start();
-            osc.stop(this.ctx.currentTime + duration);
+            osc.connect(gain); gain.connect(this.ctx.destination);
+            osc.start(); osc.stop(this.ctx.currentTime + duration);
         } catch(e) {}
     },
-    pass() { this.playSoftTone(440, 0.1, 0.08); },
-    coin() { this.playSoftTone(880, 0.12, 0.1); },
-    combo() { this.playSoftTone(587.33, 0.16, 0.12); },
-    hit() { this.playSoftTone(150, 0.2, 0.15); },
-    btn() { this.playSoftTone(320, 0.04, 0.05); },
-    victory() {
-        [440, 554.37, 659.25].forEach((f, i) => {
-            setTimeout(() => this.playSoftTone(f, 0.18, 0.1), i * 120);
-        });
-    },
+    pass() { this.playTone(440, 0.08, 0.06); },
+    coin() { this.playTone(880, 0.1, 0.08); },
+    combo() { this.playTone(587.33, 0.14, 0.1); },
+    hit() { this.playTone(150, 0.18, 0.12); },
+    btn() { this.playTone(320, 0.04, 0.04); },
+    victory() { [440, 554.37, 659.25].forEach((f, i) => setTimeout(() => this.playTone(f, 0.15, 0.08), i * 100)); },
     startBGM() {
         if (!Storage.data.settings.bgm || !this.ctx || this.bgmGain) return;
         try {
             const osc = this.ctx.createOscillator();
             this.bgmGain = this.ctx.createGain();
-            osc.type = "sine";
-            osc.frequency.setValueAtTime(110, this.ctx.currentTime);
-            this.bgmGain.gain.setValueAtTime(0.015, this.ctx.currentTime);
-            osc.connect(this.bgmGain);
-            this.bgmGain.connect(this.ctx.destination);
+            osc.type = "sine"; osc.frequency.setValueAtTime(110, this.ctx.currentTime);
+            this.bgmGain.gain.setValueAtTime(0.012, this.ctx.currentTime);
+            osc.connect(this.bgmGain); this.bgmGain.connect(this.ctx.destination);
             osc.start();
         } catch(e) {}
     },
-    stopBGM() {
-        if (this.bgmGain) {
-            try { this.bgmGain.disconnect(); } catch(e) {}
-            this.bgmGain = null;
-        }
-    }
+    stopBGM() { if (this.bgmGain) { try { this.bgmGain.disconnect(); } catch(e) {} this.bgmGain = null; } }
 };
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   2. HAPTIC (TİTREŞİM)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 const Haptic = {
-    trigger(ms) {
-        if (Storage.data.settings.vibration && "vibrate" in navigator) {
-            try { navigator.vibrate(ms); } catch(e) {}
-        }
-    },
-    light() { this.trigger(12); },
-    medium() { this.trigger(25); },
-    heavy() { this.trigger(45); }
+    trigger(ms) { if (Storage.data.settings.vibration && "vibrate" in navigator) { try { navigator.vibrate(ms); } catch(e) {} } },
+    light() { this.trigger(10); }, medium() { this.trigger(20); }, heavy() { this.trigger(40); }
 };
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   3. VERİ DEPOLAMA VE AYARLAR
+   2. VERİ YAPISI (20 GÖREV, 20 BAŞARIM, YÜKSELTMELER)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 const Storage = {
-    key: "sferis_game_save_v3",
+    key: "sferis_game_save_v7",
     data: {
-        coins: 15,
+        coins: 50,
         currentLevel: 1,
         maxUnlockedLevel: 1,
         endlessHighScore: 0,
@@ -795,18 +526,36 @@ const Storage = {
         selectedTheme: "auto",
         selectedBadge: "novice",
         unlockedItems: ["cyan", "dots", "auto", "novice"],
+        inventory: { shield: 0, revive: 0, multiplier: 1 },
+        upgrades: { magnetLevel: 0, coinBonusLevel: 0, extraShieldLevel: 0 },
         settings: { sfx: true, bgm: true, vibration: true },
-        tasks: [
-            { id: 1, desc: "25 Halka Geç", target: 25, current: 0, reward: 8, done: false },
-            { id: 2, desc: "3 Kez 3x Combo Yap", target: 3, current: 0, reward: 12, done: false },
-            { id: 3, desc: "2 Seviye Tamamla", target: 2, current: 0, reward: 15, done: false }
-        ]
+        lastSpinDate: "",
+        tasks: [],
+        achievements: []
+    },
+    initLists() {
+        if (this.data.tasks.length === 0) {
+            for (let i = 1; i <= 20; i++) {
+                let target = i * 15;
+                let reward = i * 10;
+                this.data.tasks.push({ id: i, desc: `${target} Halka Geç`, target, current: 0, reward, done: false });
+            }
+        }
+        if (this.data.achievements.length === 0) {
+            for (let i = 1; i <= 20; i++) {
+                let target = i * 20;
+                let reward = i * 15;
+                this.data.achievements.push({ id: i, title: `Ustalık ${i}`, desc: `Toplam ${target} Halka Geç`, target, current: 0, reward, claimed: false });
+            }
+        }
     },
     load() {
         try {
             const raw = localStorage.getItem(this.key);
             if (raw) this.data = { ...this.data, ...JSON.parse(raw) };
-        } catch(e) {}
+            if (!this.data.upgrades) this.data.upgrades = { magnetLevel: 0, coinBonusLevel: 0, extraShieldLevel: 0 };
+            this.initLists();
+        } catch(e) { this.initLists(); }
     },
     save() {
         try { localStorage.setItem(this.key, JSON.stringify(this.data)); } catch(e) {}
@@ -814,91 +563,59 @@ const Storage = {
 };
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   4. KOZMETİK MAĞAZASI TANIMLARI
+   3. ZENGİN MAĞAZA VE GELİŞTİRME ÖĞELERİ
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 const ShopItems = {
     balls: [
-        { id: "cyan", name: "Sferis Mavi", color: "#00e5ff", price: 0, icon: "🔵" },
-        { id: "amber", name: "Güneş Çekirdeği", color: "#ffb703", price: 60, icon: "🟡" },
-        { id: "ruby", name: "Lal Kristali", color: "#ff3366", price: 120, icon: "🔴" },
-        { id: "emerald", name: "Zümrüt Yeşili", color: "#00f59b", price: 200, icon: "🟢" }
+        { id: "cyan", name: "Sferis Mavi", color: "#00f0ff", price: 0, icon: "🔵" },
+        { id: "amber", name: "Güneş Çekirdeği", color: "#ffd700", price: 60, icon: "🟡" },
+        { id: "ruby", name: "Lal Kristali", color: "#ff0055", price: 120, icon: "🔴" },
+        { id: "emerald", name: "Zümrüt Yeşili", color: "#00ff88", price: 200, icon: "🟢" },
+        { id: "purple", name: "Kozmik Mor", color: "#9d4edd", price: 300, icon: "🟣" },
+        { id: "white", name: "Saf Işık", color: "#ffffff", price: 450, icon: "⚪" }
     ],
     trails: [
         { id: "dots", name: "Hafif Noktalar", price: 0, icon: "••" },
         { id: "glow", name: "Işık İzi", price: 80, icon: "✨" },
-        { id: "plasma", name: "Kozmik Toz", price: 150, icon: "☄️" }
+        { id: "plasma", name: "Kozmik Toz", price: 150, icon: "☄️" },
+        { id: "fire", name: "Alev Kuşağı", price: 250, icon: "🔥" }
     ],
     themes: [
         { id: "auto", name: "Dinamik Seviye", price: 0, icon: "🔄", desc: "Level'e göre değişir" },
-        { id: "nebula", name: "Özel: Nebula", price: 100, icon: "🌌", bgTop: "#070913", bgBot: "#130826", ringHue: 280, pType: "stars" },
-        { id: "sunset", name: "Özel: Günbatımı", price: 180, icon: "🌇", bgTop: "#1c0b14", bgBot: "#38131d", ringHue: 340, pType: "ember" },
-        { id: "matrix", name: "Özel: Siber Ağ", price: 250, icon: "💻", bgTop: "#03140a", bgBot: "#082918", ringHue: 145, pType: "matrix" }
+        { id: "nebula", name: "Özel: Nebula", price: 100, icon: "🌌", bgTop: "#050714", bgBot: "#180a30", ringHue: 280 },
+        { id: "sunset", name: "Özel: Günbatımı", price: 180, icon: "🌇", bgTop: "#180812", bgBot: "#35101f", ringHue: 340 },
+        { id: "matrix", name: "Özel: Siber Ağ", price: 250, icon: "💻", bgTop: "#021208", bgBot: "#072615", ringHue: 145 },
+        { id: "cyber", name: "Özel: Neon Şehir", price: 350, icon: "🌆", bgTop: "#0a031a", bgBot: "#1e0b3b", ringHue: 300 }
+    ],
+    powerups: [
+        { id: "shield_item", name: "Koruma Kalkanı", price: 40, icon: "🛡️", desc: "1 Çarpışmayı Engeller", targetKey: "shield" },
+        { id: "revive_item", name: "Ekstra Can", price: 60, icon: "❤️", desc: "Yandığında Devam Et", targetKey: "revive" },
+        { id: "mult_item", name: "2X Puan Çarpanı", price: 100, icon: "⚡", desc: "Coin Kazancını 2 Katlar", targetKey: "multiplier" }
     ],
     badges: [
         { id: "novice", name: "Kaşif", price: 0, icon: "🧭" },
         { id: "steady", name: "Denge Ustası", price: 50, icon: "⚖️" },
-        { id: "master", name: "Halka Hakimi", price: 250, icon: "👑" }
+        { id: "master", name: "Halka Hakimi", price: 250, icon: "👑" },
+        { id: "legend", name: "Efsane Sferis", price: 500, icon: "🏆" }
     ]
 };
 
+const UpgradeItems = [
+    { id: "coinBonusLevel", name: "Pasif Altın Artışı", desc: "Her toplanan coini kalıcı artırır", basePrice: 50, max: 5 },
+    { id: "magnetLevel", name: "Halka Çekim Alanı", desc: "Halkalardan puan kazanma toleransı", basePrice: 80, max: 5 },
+    { id: "extraShieldLevel", name: "Başlangıç Kalkanı", desc: "Her oyuna 1 kalkanla başlama şansı", basePrice: 120, max: 3 }
+];
+
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   5. GERÇEK DİNAMİK SEVİYE & ARKA PLAN MOTORU
+   4. TEMALAR & GRAFİK MOTORU
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 const LevelThemes = [
-    {
-        id: "theme_1_5",
-        name: "Açık Gökyüzü & Sakinlik",
-        minLevel: 1, maxLevel: 5,
-        bgTop: "#0b1528", bgBot: "#10233f",
-        ringHue: 195,
-        pType: "ambient_light",
-        bannerText: "BÖLGE 1: SAKİN BAŞLANGIÇ"
-    },
-    {
-        id: "theme_6_10",
-        name: "Gece & Derin Uzay",
-        minLevel: 6, maxLevel: 10,
-        bgTop: "#05060f", bgBot: "#0d0f24",
-        ringHue: 235,
-        pType: "stars",
-        bannerText: "BÖLGE 2: DERİN UZAY"
-    },
-    {
-        id: "theme_11_15",
-        name: "Volkanik Kor & Enerji",
-        minLevel: 11, maxLevel: 15,
-        bgTop: "#1a0808", bgBot: "#2d0f0f",
-        ringHue: 15,
-        pType: "ember",
-        bannerText: "BÖLGE 3: VOLKANİK ENERJİ"
-    },
-    {
-        id: "theme_16_20",
-        name: "Kutup & Buz Kristali",
-        minLevel: 16, maxLevel: 20,
-        bgTop: "#06131f", bgBot: "#0e2a3e",
-        ringHue: 180,
-        pType: "snow",
-        bannerText: "BÖLGE 4: BUZUL KRİSTALLERİ"
-    },
-    {
-        id: "theme_21_25",
-        name: "Kozmik Nebula & Mor Boşluk",
-        minLevel: 21, maxLevel: 25,
-        bgTop: "#140721", bgBot: "#270e3f",
-        ringHue: 290,
-        pType: "nebula",
-        bannerText: "BÖLGE 5: KOZMİK NEBULA"
-    },
-    {
-        id: "theme_26_plus",
-        name: "Sonsuz Işık & Ustalık",
-        minLevel: 26, maxLevel: 9999,
-        bgTop: "#171408", bgBot: "#332c12",
-        ringHue: 45,
-        pType: "matrix",
-        bannerText: "BÖLGE 6: USTALIK ÇEMBERİ"
-    }
+    { minLevel: 1, maxLevel: 5, bgTop: "#040b18", bgBot: "#0d1b33", ringHue: 195, pType: "ambient", bannerText: "BÖLGE 1: SAKİN BAŞLANGIÇ" },
+    { minLevel: 6, maxLevel: 10, bgTop: "#03040a", bgBot: "#0a0c20", ringHue: 235, pType: "stars", bannerText: "BÖLGE 2: DERİN UZAY" },
+    { minLevel: 11, maxLevel: 15, bgTop: "#140404", bgBot: "#260808", ringHue: 15, pType: "ember", bannerText: "BÖLGE 3: VOLKANİK ENERJİ" },
+    { minLevel: 16, maxLevel: 20, bgTop: "#04101a", bgBot: "#0a2233", ringHue: 180, pType: "snow", bannerText: "BÖLGE 4: BUZUL KRİSTALLERİ" },
+    { minLevel: 21, maxLevel: 25, bgTop: "#0f041a", bgBot: "#210938", ringHue: 290, pType: "nebula", bannerText: "BÖLGE 5: KOZMİK NEBULA" },
+    { minLevel: 26, maxLevel: 9999, bgTop: "#141103", bgBot: "#2e2708", ringHue: 45, pType: "matrix", bannerText: "BÖLGE 6: USTALIK ÇEMBERİ" }
 ];
 
 function resolveActiveTheme(level, score, mode) {
@@ -921,197 +638,78 @@ function resolveActiveTheme(level, score, mode) {
     return LevelThemes[LevelThemes.length - 1];
 }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   6. GELİŞMİŞ ARKA PLAN VE PARÇACIK EFEKT MOTORU
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 let W = window.innerWidth, H = window.innerHeight;
 
-function resize() {
-    W = window.innerWidth;
-    H = window.innerHeight;
-    canvas.width = W;
-    canvas.height = H;
-}
+function resize() { W = window.innerWidth; H = window.innerHeight; canvas.width = W; canvas.height = H; }
 window.addEventListener("resize", resize);
 resize();
 
 const BackgroundEngine = {
-    currentTheme: null,
-    prevTheme: null,
-    transitionProgress: 1,
-    particles: [],
-
-    init(theme) {
-        this.currentTheme = theme;
-        this.prevTheme = theme;
-        this.transitionProgress = 1;
-        this.reseedParticles(theme.pType);
-    },
-
+    currentTheme: null, particles: [],
+    init(theme) { this.currentTheme = theme; this.reseed(); },
     setTheme(newTheme, showBanner = true) {
-        if (this.currentTheme && this.currentTheme.id === newTheme.id) return;
-        this.prevTheme = this.currentTheme || newTheme;
-        this.currentTheme = newTheme;
-        this.transitionProgress = 0;
-        this.reseedParticles(newTheme.pType);
-
-        if (showBanner && newTheme.bannerText && Game.active) {
-            UI.showThemeBanner(newTheme.bannerText);
-        }
+        if (this.currentTheme && this.currentTheme.bgTop === newTheme.bgTop) return;
+        this.currentTheme = newTheme; this.reseed();
+        if (showBanner && newTheme.bannerText && Game.active) UI.showThemeBanner(newTheme.bannerText);
     },
-
-    reseedParticles(pType) {
+    reseed() {
         this.particles = [];
-        const count = 35;
-        for (let i = 0; i < count; i++) {
-            this.particles.push(this.createParticle(pType));
+        for (let i = 0; i < 40; i++) {
+            this.particles.push({
+                x: Math.random() * W, y: Math.random() * H,
+                radius: Math.random() * 2 + 0.8,
+                vx: (Math.random() - 0.5) * 0.3,
+                vy: -(Math.random() * 0.4 + 0.1),
+                alpha: Math.random() * 0.5 + 0.2
+            });
         }
     },
-
-    createParticle(pType) {
-        return {
-            x: Math.random() * W,
-            y: Math.random() * H,
-            radius: Math.random() * 2.5 + 1,
-            vx: (Math.random() - 0.5) * 0.4,
-            vy: pType === "ember" ? -(Math.random() * 0.8 + 0.3) :
-                pType === "snow"  ?  (Math.random() * 0.6 + 0.2) :
-                                    -(Math.random() * 0.4 + 0.1),
-            alpha: Math.random() * 0.6 + 0.2,
-            pulse: Math.random() * Math.PI * 2,
-            pType: pType
-        };
-    },
-
     updateAndDraw(ctx) {
         if (!this.currentTheme) return;
-
-        if (this.transitionProgress < 1) {
-            this.transitionProgress += 0.025;
-            if (this.transitionProgress > 1) this.transitionProgress = 1;
-        }
-
         const grad = ctx.createLinearGradient(0, 0, 0, H);
-        if (this.transitionProgress < 1 && this.prevTheme) {
-            grad.addColorStop(0, this.prevTheme.bgTop);
-            grad.addColorStop(1, this.prevTheme.bgBot);
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, W, H);
-
-            ctx.save();
-            ctx.globalAlpha = this.transitionProgress;
-            const newGrad = ctx.createLinearGradient(0, 0, 0, H);
-            newGrad.addColorStop(0, this.currentTheme.bgTop);
-            newGrad.addColorStop(1, this.currentTheme.bgBot);
-            ctx.fillStyle = newGrad;
-            ctx.fillRect(0, 0, W, H);
-            ctx.restore();
-        } else {
-            grad.addColorStop(0, this.currentTheme.bgTop);
-            grad.addColorStop(1, this.currentTheme.bgBot);
-            ctx.fillStyle = grad;
-            ctx.fillRect(0, 0, W, H);
-        }
+        grad.addColorStop(0, this.currentTheme.bgTop);
+        grad.addColorStop(1, this.currentTheme.bgBot);
+        ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
 
         ctx.save();
         for (let p of this.particles) {
-            p.x += p.vx;
-            p.y += p.vy;
-            p.pulse += 0.03;
-
+            p.x += p.vx; p.y += p.vy;
             if (p.y < 0) { p.y = H; p.x = Math.random() * W; }
-            if (p.y > H) { p.y = 0; p.x = Math.random() * W; }
-            if (p.x < 0) p.x = W;
-            if (p.x > W) p.x = 0;
-
-            const alpha = p.alpha * (0.8 + Math.sin(p.pulse) * 0.2);
-            ctx.globalAlpha = alpha;
-
-            if (p.pType === "ember") {
-                ctx.fillStyle = "#ff6b35";
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius * 1.2, 0, Math.PI * 2);
-                ctx.fill();
-            } else if (p.pType === "snow") {
-                ctx.fillStyle = "#e0fbfc";
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fill();
-            } else if (p.pType === "nebula") {
-                ctx.fillStyle = "#c77dff";
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius * 1.5, 0, Math.PI * 2);
-                ctx.fill();
-            } else if (p.pType === "matrix") {
-                ctx.fillStyle = "#ffd166";
-                ctx.fillRect(p.x, p.y, p.radius * 1.5, p.radius * 1.5);
-            } else {
-                ctx.fillStyle = "#ffffff";
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                ctx.fill();
-            }
+            ctx.globalAlpha = p.alpha;
+            ctx.fillStyle = "#ffffff";
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill();
         }
         ctx.restore();
     }
 };
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   7. FX (İz ve Çarpışma) MOTORU
+   5. FX MOTORU
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 class ParticleEngine {
-    constructor() {
-        this.particles = [];
-        this.trailPoints = [];
-    }
+    constructor() { this.particles = []; this.trailPoints = []; }
     emit(x, y, color, count = 8, speed = 2.5) {
         for (let i = 0; i < count; i++) {
             const angle = Math.random() * Math.PI * 2;
             const spd = (Math.random() * 0.7 + 0.3) * speed;
-            this.particles.push({
-                x, y,
-                vx: Math.cos(angle) * spd,
-                vy: Math.sin(angle) * spd,
-                radius: Math.random() * 2 + 1,
-                color,
-                alpha: 0.8,
-                decay: Math.random() * 0.03 + 0.02
-            });
+            this.particles.push({ x, y, vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd, radius: Math.random() * 2 + 1, color, alpha: 0.8, decay: 0.025 });
         }
     }
-    addTrail(x, y, color) {
-        this.trailPoints.push({ x, y, color, alpha: 0.5 });
-    }
+    addTrail(x, y, color) { this.trailPoints.push({ x, y, color, alpha: 0.4 }); }
     updateAndDraw(ctx) {
         for (let i = this.trailPoints.length - 1; i >= 0; i--) {
-            const t = this.trailPoints[i];
-            t.alpha -= 0.03;
-            if (t.alpha <= 0) {
-                this.trailPoints.splice(i, 1);
-                continue;
-            }
-            ctx.fillStyle = t.color;
-            ctx.globalAlpha = t.alpha;
-            ctx.beginPath();
-            ctx.arc(t.x, t.y, 4 * t.alpha, 0, Math.PI * 2);
-            ctx.fill();
+            const t = this.trailPoints[i]; t.alpha -= 0.03;
+            if (t.alpha <= 0) { this.trailPoints.splice(i, 1); continue; }
+            ctx.fillStyle = t.color; ctx.globalAlpha = t.alpha;
+            ctx.beginPath(); ctx.arc(t.x, t.y, 3.5 * t.alpha, 0, Math.PI * 2); ctx.fill();
         }
         for (let i = this.particles.length - 1; i >= 0; i--) {
-            const p = this.particles[i];
-            p.x += p.vx;
-            p.y += p.vy;
-            p.alpha -= p.decay;
-            if (p.alpha <= 0) {
-                this.particles.splice(i, 1);
-                continue;
-            }
-            ctx.globalAlpha = p.alpha;
-            ctx.fillStyle = p.color;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            ctx.fill();
+            const p = this.particles[i]; p.x += p.vx; p.y += p.vy; p.alpha -= p.decay;
+            if (p.alpha <= 0) { this.particles.splice(i, 1); continue; }
+            ctx.globalAlpha = p.alpha; ctx.fillStyle = p.color;
+            ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill();
         }
         ctx.globalAlpha = 1;
     }
@@ -1119,23 +717,13 @@ class ParticleEngine {
 const fx = new ParticleEngine();
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   8. TOP VE HALKA MODELİ
+   6. OYUN NESNELERİ (TOP & HALKA)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 const Ball = {
-    x: W / 2,
-    y: H * 0.22,
-    radius: 13,
-    vx: 0,
-    friction: 0.89,
-    maxSpeed: 15,
-    reset() {
-        this.x = W / 2;
-        this.y = H * 0.22;
-        this.vx = 0;
-    },
+    x: W / 2, y: H * 0.22, radius: 13, vx: 0, friction: 0.89, maxSpeed: 15,
+    reset() { this.x = W / 2; this.y = H * 0.22; this.vx = 0; },
     update() {
-        this.x += this.vx;
-        this.vx *= this.friction;
+        this.x += this.vx; this.vx *= this.friction;
         if (Math.abs(this.vx) < 0.01) this.vx = 0;
         if (this.x - this.radius < 0) { this.x = this.radius; this.vx = 0; }
         if (this.x + this.radius > W) { this.x = W - this.radius; this.vx = 0; }
@@ -1149,32 +737,22 @@ const Ball = {
         const ballSkin = ShopItems.balls.find(b => b.id === Storage.data.selectedBall) || ShopItems.balls[0];
         ctx.save();
         ctx.fillStyle = ballSkin.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fill();
-
+        ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
-        ctx.beginPath();
-        ctx.arc(this.x - 3, this.y - 3, this.radius * 0.35, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.beginPath(); ctx.arc(this.x - 3, this.y - 3, this.radius * 0.35, 0, Math.PI * 2); ctx.fill();
         ctx.restore();
     }
 };
 
 class Ring {
     constructor(speed, gapSize, moving = false, hue = 195) {
-        this.y = H + 30;
-        this.thickness = 20;
-        this.speed = speed;
-        this.gapSize = gapSize;
+        this.y = H + 30; this.thickness = 20; this.speed = speed; this.gapSize = gapSize;
         this.gapX = Math.random() * (W - this.gapSize - 40) + 20;
         this.passed = false;
-        this.color = `hsl(${(hue + Math.random() * 20) % 360}, 80%, 55%)`;
-        this.moving = moving;
-        this.moveDir = Math.random() > 0.5 ? 1 : -1;
-        this.moveSpeed = 1.3;
-        this.hasCoin = Math.random() < 0.25;
-        this.coinCollected = false;
+        this.isPortal = Math.random() < 0.12;
+        this.color = this.isPortal ? "#9d4edd" : `hsl(${(hue + Math.random() * 20) % 360}, 85%, 55%)`;
+        this.moving = moving; this.moveDir = Math.random() > 0.5 ? 1 : -1; this.moveSpeed = 1.3;
+        this.hasCoin = !this.isPortal && Math.random() < 0.25; this.coinCollected = false;
     }
     update() {
         this.y -= this.speed;
@@ -1189,225 +767,171 @@ class Ring {
         ctx.fillRect(0, this.y, this.gapX, this.thickness);
         ctx.fillRect(this.gapX + this.gapSize, this.y, W - (this.gapX + this.gapSize), this.thickness);
 
-        ctx.fillStyle = "#ffffff";
+        ctx.fillStyle = this.isPortal ? "#ffd700" : "#ffffff";
         ctx.beginPath();
         ctx.arc(this.gapX, this.y + this.thickness / 2, 4, 0, Math.PI * 2);
         ctx.arc(this.gapX + this.gapSize, this.y + this.thickness / 2, 4, 0, Math.PI * 2);
         ctx.fill();
 
         if (this.hasCoin && !this.coinCollected) {
-            const cx = this.gapX + this.gapSize / 2;
-            const cy = this.y + this.thickness / 2;
-            ctx.fillStyle = "#ffb703";
-            ctx.beginPath();
-            ctx.arc(cx, cy, 6, 0, Math.PI * 2);
-            ctx.fill();
+            const cx = this.gapX + this.gapSize / 2, cy = this.y + this.thickness / 2;
+            ctx.fillStyle = "#ffd700";
+            ctx.beginPath(); ctx.arc(cx, cy, 6, 0, Math.PI * 2); ctx.fill();
         }
         ctx.restore();
     }
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   9. OYUN YÖNETİMİ
+   7. OYUN MOTORU & YÖNETİMİ
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 const Game = {
-    active: false,
-    mode: "level",
-    level: 1,
-    score: 0,
-    targetScore: 15,
-    coinsEarned: 0,
-    combo: 0,
-    lives: 3,
-    rings: [],
-    spawnTimer: 0,
+    active: false, mode: "level", level: 1, score: 0, targetScore: 15, coinsEarned: 0, combo: 0, lives: 1, rings: [], spawnTimer: 0,
 
     startLevel(lvl) {
-        Sound.init();
-        Sound.btn();
-        Sound.startBGM();
+        Sound.init(); Sound.btn(); Sound.startBGM();
+        this.mode = "level"; this.level = lvl; this.score = 0; this.coinsEarned = 0; this.combo = 0;
+        this.lives = 1 + (Storage.data.upgrades.extraShieldLevel || 0);
+        this.targetScore = 15 + (lvl - 1) * 4; this.rings = []; this.spawnTimer = 0; this.active = true;
 
-        this.mode = "level";
-        this.level = lvl;
-        this.score = 0;
-        this.coinsEarned = 0;
-        this.combo = 0;
-        this.lives = 3;
-        this.targetScore = 15 + (lvl - 1) * 4;
-        this.rings = [];
-        this.spawnTimer = 0;
-        this.active = true;
-
-        const activeTheme = resolveActiveTheme(this.level, this.score, this.mode);
-        BackgroundEngine.setTheme(activeTheme, true);
-
-        Ball.reset();
-        UI.showHUD(true);
-        UI.updateHUD();
-        UI.showScreen(null);
+        BackgroundEngine.setTheme(resolveActiveTheme(this.level, this.score, this.mode), true);
+        Ball.reset(); UI.showHUD(true); UI.updateHUD(); UI.showScreen(null);
     },
 
     startEndless() {
-        Sound.init();
-        Sound.btn();
-        Sound.startBGM();
+        Sound.init(); Sound.btn(); Sound.startBGM();
+        this.mode = "endless"; this.score = 0; this.coinsEarned = 0; this.combo = 0;
+        this.lives = 1 + (Storage.data.upgrades.extraShieldLevel || 0);
+        this.rings = []; this.spawnTimer = 0; this.active = true;
 
-        this.mode = "endless";
-        this.score = 0;
-        this.coinsEarned = 0;
-        this.combo = 0;
-        this.lives = 3;
-        this.rings = [];
-        this.spawnTimer = 0;
-        this.active = true;
-
-        const activeTheme = resolveActiveTheme(1, 0, this.mode);
-        BackgroundEngine.setTheme(activeTheme, false);
-
-        Ball.reset();
-        UI.showHUD(true);
-        UI.updateHUD();
-        UI.showScreen(null);
+        BackgroundEngine.setTheme(resolveActiveTheme(1, 0, this.mode), false);
+        Ball.reset(); UI.showHUD(true); UI.updateHUD(); UI.showScreen(null);
     },
 
-    retry() {
-        if (this.mode === "level") this.startLevel(this.level);
-        else this.startEndless();
-    },
+    retry() { if (this.mode === "level") this.startLevel(this.level); else this.startEndless(); },
 
     nextLevel() {
         const nextLvl = this.level + 1;
-        if (nextLvl > Storage.data.maxUnlockedLevel) {
-            Storage.data.maxUnlockedLevel = nextLvl;
-        }
-        Storage.data.currentLevel = nextLvl;
-        Storage.save();
+        if (nextLvl > Storage.data.maxUnlockedLevel) Storage.data.maxUnlockedLevel = nextLvl;
+        Storage.data.currentLevel = nextLvl; Storage.save();
         this.startLevel(nextLvl);
     },
 
     onRingPass(r) {
-        this.score++;
-        this.combo++;
-        Sound.pass();
-        Haptic.light();
-        fx.emit(Ball.x, Ball.y, "#00e5ff", 6);
+        this.score++; this.combo++; Sound.pass(); Haptic.light();
+        fx.emit(Ball.x, Ball.y, r.isPortal ? "#9d4edd" : "#00f0ff", 6);
+
+        if (r.isPortal) { Sound.portal(); Storage.data.coins += 5; this.updateAchievement(2, 1); }
+
+        this.updateTaskProgress(1);
+        this.updateAchievementProgress(1);
+        if (this.mode === "endless") {
+            this.updateAchievementProgress(this.score);
+            BackgroundEngine.setTheme(resolveActiveTheme(1, this.score, this.mode), true);
+        }
 
         if (this.combo >= 2) {
             UI.showCombo(this.combo);
-            if (this.combo % 3 === 0) {
-                Sound.combo();
-                Haptic.medium();
-                this.updateTask(2, 1);
-            }
+            if (this.combo % 3 === 0) { Sound.combo(); Haptic.medium(); }
         }
 
-        this.updateTask(1, 1);
-
-        if (this.mode === "endless") {
-            const nextTheme = resolveActiveTheme(1, this.score, this.mode);
-            BackgroundEngine.setTheme(nextTheme, true);
-        }
-
-        if (this.mode === "level" && this.score >= this.targetScore) {
-            this.victory();
-        }
+        if (this.mode === "level" && this.score >= this.targetScore) this.victory();
         UI.updateHUD();
     },
 
     onCoinCollect(r) {
         r.coinCollected = true;
-        this.coinsEarned += 1;
-        Storage.data.coins += 1;
-        Storage.save();
-        Sound.coin();
-        Haptic.light();
-        fx.emit(Ball.x, Ball.y, "#ffb703", 10);
+        const multiplier = Storage.data.inventory.multiplier || 1;
+        const bonusLvl = Storage.data.upgrades.coinBonusLevel || 0;
+        const earned = Math.floor((1 + bonusLvl * 0.4) * multiplier);
+        this.coinsEarned += earned; Storage.data.coins += earned; Storage.save();
+        Sound.coin(); Haptic.light(); fx.emit(Ball.x, Ball.y, "#ffd700", 10);
         UI.updateHUD();
     },
 
     onHit() {
-        this.lives--;
-        this.combo = 0;
-        UI.hideCombo();
-        Sound.hit();
-        Haptic.heavy();
-        fx.emit(Ball.x, Ball.y, "#ff3366", 16);
+        if (Storage.data.inventory.shield > 0) {
+            Storage.data.inventory.shield--; Storage.save();
+            Sound.hit(); Haptic.medium(); fx.emit(Ball.x, Ball.y, "#00f0ff", 20);
+            return;
+        }
 
-        if (this.lives <= 0) this.gameOver();
-        else UI.updateHUD();
+        this.lives--; this.combo = 0; UI.hideCombo(); Sound.hit(); Haptic.heavy();
+        fx.emit(Ball.x, Ball.y, "#ff0055", 16);
+
+        if (this.lives <= 0) {
+            if (Storage.data.inventory.revive > 0) {
+                Storage.data.inventory.revive--; Storage.save();
+                this.lives = 1; Sound.victory(); fx.emit(Ball.x, Ball.y, "#ffd700", 25);
+                UI.updateHUD(); return;
+            }
+            this.gameOver();
+        } else { UI.updateHUD(); }
     },
 
-    updateTask(id, amt) {
-        const t = Storage.data.tasks.find(x => x.id === id);
-        if (t && !t.done) {
-            t.current += amt;
-            if (t.current >= t.target) {
-                t.done = true;
-                Storage.data.coins += t.reward;
+    updateTaskProgress(amt) {
+        Storage.data.tasks.forEach(t => {
+            if (!t.done) {
+                t.current += amt;
+                if (t.current >= t.target) { t.done = true; Storage.data.coins += t.reward; }
             }
-            Storage.save();
-        }
+        });
+        Storage.save();
+    },
+
+    updateAchievementProgress(val) {
+        Storage.data.achievements.forEach(a => {
+            if (!a.claimed) {
+                a.current = Math.max(a.current, val);
+            }
+        });
+        Storage.save();
     },
 
     victory() {
         this.active = false;
-        const reward = 3 + Math.floor(this.level * 0.5);
+        const multiplier = Storage.data.inventory.multiplier || 1;
+        const reward = (4 + Math.floor(this.level * 0.6)) * multiplier;
         Storage.data.coins += reward;
-        if (this.level >= Storage.data.maxUnlockedLevel) {
-            Storage.data.maxUnlockedLevel = this.level + 1;
-        }
-        this.updateTask(3, 1);
+        if (this.level >= Storage.data.maxUnlockedLevel) Storage.data.maxUnlockedLevel = this.level + 1;
         Storage.save();
 
         Sound.victory();
         document.getElementById("vic-score").innerText = this.score;
         document.getElementById("vic-coins").innerText = reward + this.coinsEarned;
-        UI.showHUD(false);
-        UI.showScreen("victory-screen");
+        UI.showHUD(false); UI.showScreen("victory-screen");
     },
 
     gameOver() {
         this.active = false;
         let isRecord = false;
-        if (this.mode === "endless") {
-            if (this.score > Storage.data.endlessHighScore) {
-                Storage.data.endlessHighScore = this.score;
-                isRecord = true;
-            }
+        if (this.mode === "endless" && this.score > Storage.data.endlessHighScore) {
+            Storage.data.endlessHighScore = this.score; isRecord = true;
         }
         Storage.save();
 
         document.getElementById("gov-score").innerText = this.score;
         document.getElementById("gov-best").innerText = this.mode === "endless" ? Storage.data.endlessHighScore : "-";
         document.getElementById("gov-sub").innerText = isRecord ? "🎉 YENİ SERBEST REKORU!" : "Odaklan ve tekrar dene.";
-        UI.showHUD(false);
-        UI.showScreen("gameover-screen");
+        UI.showHUD(false); UI.showScreen("gameover-screen");
     }
 };
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   10. DOKUNMATİK ANALOG SÜRÜKLEME KONTROLÜ
+   8. KONTROLLER
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-let lastTouchX = 0;
-let isDragging = false;
-const SENSITIVITY = 0.85;
-
-function onTouchStart(e) {
-    if (!Game.active) return;
-    isDragging = true;
-    lastTouchX = e.touches ? e.touches[0].clientX : e.clientX;
-}
-
+let lastTouchX = 0; let isDragging = false;
+function onTouchStart(e) { if (!Game.active) return; isDragging = true; lastTouchX = e.touches ? e.touches[0].clientX : e.clientX; }
 function onTouchMove(e) {
     if (!isDragging || !Game.active) return;
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const deltaX = clientX - lastTouchX;
-    Ball.vx += deltaX * SENSITIVITY * 0.2;
+    const magBonus = 1 + (Storage.data.upgrades.magnetLevel || 0) * 0.08;
+    Ball.vx += deltaX * 0.85 * 0.2 * magBonus;
     if (Ball.vx > Ball.maxSpeed) Ball.vx = Ball.maxSpeed;
     if (Ball.vx < -Ball.maxSpeed) Ball.vx = -Ball.maxSpeed;
     lastTouchX = clientX;
 }
-
 function onTouchEnd() { isDragging = false; }
 
 window.addEventListener("touchstart", onTouchStart, { passive: false });
@@ -1418,53 +942,45 @@ window.addEventListener("mousemove", onTouchMove);
 window.addEventListener("mouseup", onTouchEnd);
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   11. ANA DÖNGÜ (MAIN LOOP)
+   9. ANA DÖNGÜ
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 function mainLoop() {
     BackgroundEngine.updateAndDraw(ctx);
 
     if (Game.active) {
         Ball.update();
-
         const curTheme = BackgroundEngine.currentTheme || LevelThemes[0];
-        const diffFactor = Game.mode === "level" ? Game.level : Math.min(25, Math.floor(Game.score / 6) + 1);
-        const baseSpeed = 4.0 + diffFactor * 0.15;
-        const gapSize = Math.max(W * 0.21, (W * 0.36) - (diffFactor * 2.5));
-        const spawnInterval = Math.max(34, 62 - diffFactor * 1.5);
+        const rawDiff = Game.mode === "level" ? Game.level : Math.min(25, Math.floor(Game.score / 6) + 1);
+        const diffFactor = Math.max(1, rawDiff * 0.75);
+        
+        const baseSpeed = 3.2 + diffFactor * 0.12;
+        const gapSize = Math.max(W * 0.23, (W * 0.38) - (diffFactor * 2.0));
+        const spawnInterval = Math.max(40, 70 - diffFactor * 1.2);
 
         Game.spawnTimer++;
         if (Game.spawnTimer >= spawnInterval) {
-            const isMoving = diffFactor >= 3 && Math.random() < 0.38;
+            const isMoving = diffFactor >= 4 && Math.random() < 0.32;
             Game.rings.push(new Ring(baseSpeed, gapSize, isMoving, curTheme.ringHue));
             Game.spawnTimer = 0;
         }
 
         for (let i = Game.rings.length - 1; i >= 0; i--) {
-            const r = Game.rings[i];
-            r.update();
-            r.draw(ctx);
+            const r = Game.rings[i]; r.update(); r.draw(ctx);
 
             const inVertical = (Ball.y + Ball.radius > r.y) && (Ball.y - Ball.radius < r.y + r.thickness);
             if (inVertical) {
                 const inGap = (Ball.x - Ball.radius > r.gapX) && (Ball.x + Ball.radius < r.gapX + r.gapSize);
                 if (!inGap) {
-                    Game.onHit();
-                    Game.rings.splice(i, 1);
-                    continue;
+                    Game.onHit(); Game.rings.splice(i, 1); continue;
                 } else if (r.hasCoin && !r.coinCollected) {
                     const coinX = r.gapX + r.gapSize / 2;
                     if (Math.abs(Ball.x - coinX) < 18) Game.onCoinCollect(r);
                 }
             }
 
-            if (!r.passed && Ball.y > r.y + r.thickness) {
-                r.passed = true;
-                Game.onRingPass(r);
-            }
-
+            if (!r.passed && Ball.y > r.y + r.thickness) { r.passed = true; Game.onRingPass(r); }
             if (r.y < -50) Game.rings.splice(i, 1);
         }
-
         Ball.draw(ctx);
     }
 
@@ -1473,63 +989,86 @@ function mainLoop() {
 }
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   12. UI VE MENÜ YÖNETİMİ
+   10. GÜNLÜK ŞANS ÇARKI
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+const SpinWheel = {
+    open() {
+        Sound.btn(); UI.showScreen('spin-menu');
+        const today = new Date().toDateString();
+        const btn = document.getElementById("spin-btn");
+        const txt = document.getElementById("spin-result-text");
+        if (Storage.data.lastSpinDate === today) {
+            btn.style.opacity = "0.4"; btn.style.pointerEvents = "none";
+            txt.innerText = "Bugünkü hakkını kullandın! Yarın tekrar gel.";
+        } else {
+            btn.style.opacity = "1"; btn.style.pointerEvents = "auto";
+            txt.innerText = "Her gün 1 kez ücretsiz çevir ve sürpriz ödülü kap!";
+        }
+    },
+    spin() {
+        const today = new Date().toDateString();
+        if (Storage.data.lastSpinDate === today) return;
+        Storage.data.lastSpinDate = today;
+        const rewards = [
+            { type: "coins", val: 30, desc: "🎉 30 Altın Kazandın!" },
+            { type: "coins", val: 70, desc: "🌟 70 Büyük Altın Kazandın!" },
+            { type: "shield", val: 1, desc: "🛡️ 1 Koruma Kalkanı Kazandın!" },
+            { type: "revive", val: 1, desc: "❤️ 1 Ekstra Can Kazandın!" }
+        ];
+        const prize = rewards[Math.floor(Math.random() * rewards.length)];
+        if (prize.type === "coins") Storage.data.coins += prize.val;
+        else Storage.data.inventory[prize.type]++;
+        Storage.save(); Sound.victory(); Haptic.medium();
+        document.getElementById("spin-result-text").innerText = prize.desc;
+        document.getElementById("spin-btn").style.opacity = "0.4";
+        document.getElementById("spin-btn").style.pointerEvents = "none";
+        UI.updateMenuData();
+    }
+};
+
+/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+   11. UI VE YÖNETİM
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 let currentShopTab = "balls";
 
 const UI = {
     showScreen(id) {
-        Sound.btn();
-        document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-        if (id) {
-            document.getElementById(id).classList.add("active");
-            this.updateMenuData();
-        }
+        Sound.btn(); document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+        if (id) { document.getElementById(id).classList.add("active"); this.updateMenuData(); }
     },
-    showHUD(visible) {
-        document.getElementById("hud-layer").style.display = visible ? "block" : "none";
-    },
+    showHUD(visible) { document.getElementById("hud-layer").style.display = visible ? "block" : "none"; },
     showThemeBanner(text) {
         const b = document.getElementById("theme-banner");
-        b.innerText = text;
-        b.classList.add("show");
+        b.innerText = text; b.classList.add("show");
         setTimeout(() => b.classList.remove("show"), 2000);
     },
     updateHUD() {
         document.getElementById("hud-score").innerText = Game.score;
         document.getElementById("hud-mode-title").innerText = Game.mode === "level" ? `LEVEL ${Game.level}` : "SERBEST";
         document.getElementById("hud-coins").innerText = Storage.data.coins;
-        document.getElementById("hud-hearts").innerText = "❤️".repeat(Math.max(0, Game.lives));
-
+        let heartStr = "❤️".repeat(Math.max(0, Game.lives));
+        if (Storage.data.inventory.shield > 0) heartStr += " 🛡️";
+        if (Storage.data.inventory.revive > 0) heartStr += " ➕";
+        document.getElementById("hud-hearts").innerText = heartStr;
         const progressWrap = document.getElementById("hud-progress-wrap");
         if (Game.mode === "level") {
             progressWrap.style.display = "block";
             document.getElementById("hud-progress").style.width = `${Math.min(100, (Game.score / Game.targetScore) * 100)}%`;
-        } else {
-            progressWrap.style.display = "none";
-        }
+        } else { progressWrap.style.display = "none"; }
     },
-    showCombo(combo) {
-        const tag = document.getElementById("hud-combo");
-        tag.innerText = `COMBO x${combo}`;
-        tag.classList.add("active");
-    },
-    hideCombo() {
-        document.getElementById("hud-combo").classList.remove("active");
-    },
+    showCombo(combo) { const tag = document.getElementById("hud-combo"); tag.innerText = `COMBO x${combo}`; tag.classList.add("active"); },
+    hideCombo() { document.getElementById("hud-combo").classList.remove("active"); },
     updateMenuData() {
         document.getElementById("menu-coins").innerText = Storage.data.coins;
         document.getElementById("shop-coins").innerText = Storage.data.coins;
+        document.getElementById("upgrade-coins").innerText = Storage.data.coins;
         document.getElementById("menu-endless-high").innerText = Storage.data.endlessHighScore;
         document.getElementById("menu-level-indicator").innerText = Storage.data.maxUnlockedLevel;
-        this.renderLevelGrid();
-        this.renderShop();
-        this.renderTasks();
+        this.renderLevelGrid(); this.renderShop(); this.renderUpgrades(); this.renderTasks(); this.renderAchievements();
         Settings.syncToggles();
     },
     renderLevelGrid() {
-        const c = document.getElementById("level-grid-container");
-        let html = "";
+        const c = document.getElementById("level-grid-container"); let html = "";
         for (let i = 1; i <= 28; i++) {
             const isCompleted = i < Storage.data.maxUnlockedLevel;
             const isCurrent = i === Storage.data.maxUnlockedLevel;
@@ -1543,20 +1082,45 @@ const UI = {
     renderShop() {
         const c = document.getElementById("shop-grid-container");
         const items = ShopItems[currentShopTab] || [];
-        const selectedKey = currentShopTab === "balls" ? "selectedBall" :
-                            currentShopTab === "trails" ? "selectedTrail" :
-                            currentShopTab === "themes" ? "selectedTheme" : "selectedBadge";
-
+        const selectedKey = currentShopTab === "balls" ? "selectedBall" : currentShopTab === "trails" ? "selectedTrail" : currentShopTab === "themes" ? "selectedTheme" : "selectedBadge";
         c.innerHTML = items.map(item => {
+            if (currentShopTab === "powerups") {
+                const count = Storage.data.inventory[item.targetKey] || 0;
+                return `
+                    <div class="shop-card" onclick="Shop.buyPowerup('${item.targetKey}', ${item.price})">
+                        <div class="shop-preview">${item.icon}</div>
+                        <div class="shop-item-name">${item.name}</div>
+                        <div style="font-size: 9px; color: var(--text-dim);">${item.desc}</div>
+                        <div class="shop-item-status" style="color: var(--accent);">Sahip: ${count} | Al (${item.price} 🪙)</div>
+                    </div>
+                `;
+            }
             const isUnlocked = Storage.data.unlockedItems.includes(item.id);
             const isSelected = Storage.data[selectedKey] === item.id;
             return `
                 <div class="shop-card ${isSelected ? 'selected' : ''}" onclick="Shop.selectItem('${currentShopTab}', '${item.id}')">
                     <div class="shop-preview" style="${item.color ? `background:${item.color};` : ''}">${item.icon || ''}</div>
                     <div class="shop-item-name">${item.name}</div>
-                    <div class="shop-item-status" style="${isSelected ? 'color:var(--primary);' : ''}">
-                        ${isSelected ? 'SEÇİLİ' : (isUnlocked ? 'KULLAN' : item.price + ' 🪙')}
+                    <div class="shop-item-status" style="${isSelected ? 'color:var(--primary);' : ''}">${isSelected ? 'SEÇİLİ' : (isUnlocked ? 'KULLAN' : item.price + ' 🪙')}</div>
+                </div>
+            `;
+        }).join("");
+    },
+    renderUpgrades() {
+        const c = document.getElementById("upgrades-container");
+        c.innerHTML = UpgradeItems.map(up => {
+            const currentLvl = Storage.data.upgrades[up.id] || 0;
+            const price = up.basePrice * (currentLvl + 1);
+            const isMax = currentLvl >= up.max;
+            return `
+                <div class="glass-panel list-row">
+                    <div>
+                        <div style="font-size: 13px; font-weight: 700;">${up.name} (Seviye ${currentLvl}/${up.max})</div>
+                        <div style="font-size: 11px; color: var(--text-dim);">${up.desc}</div>
                     </div>
+                    <button class="btn-secondary" style="padding: 6px 12px; font-size: 11px; ${isMax ? 'opacity:0.4;' : ''}" onclick="Shop.buyUpgrade('${up.id}', ${price}, ${up.max})">
+                        ${isMax ? 'MAX' : `${price} 🪙`}
+                    </button>
                 </div>
             `;
         }).join("");
@@ -1566,84 +1130,88 @@ const UI = {
         c.innerHTML = Storage.data.tasks.map(t => `
             <div class="glass-panel list-row">
                 <div>
-                    <div style="font-size: 13px; font-weight: 700;">${t.desc}</div>
-                    <div style="font-size: 11px; color: var(--text-dim);">${t.done ? 'Tamamlandı' : `${t.current}/${t.target}`}</div>
+                    <div style="font-size: 12px; font-weight: 700;">${t.desc}</div>
+                    <div style="font-size: 10px; color: var(--text-dim);">${t.done ? 'Tamamlandı' : `${t.current}/${t.target}`}</div>
                 </div>
-                <div class="currency-badge" style="font-size: 12px; padding: 4px 10px;">
-                    ${t.done ? '✅' : `+${t.reward} 🪙`}
-                </div>
+                <div class="currency-badge" style="font-size: 11px; padding: 3px 8px;">${t.done ? '✅' : `+${t.reward} 🪙`}</div>
             </div>
         `).join("");
+    },
+    renderAchievements() {
+        const c = document.getElementById("achievement-container");
+        c.innerHTML = Storage.data.achievements.map(a => {
+            const isReady = a.current >= a.target && !a.claimed;
+            return `
+                <div class="glass-panel list-row">
+                    <div>
+                        <div style="font-size: 12px; font-weight: 700;">🏅 ${a.title}</div>
+                        <div style="font-size: 10px; color: var(--text-dim);">${a.desc} (${Math.min(a.current, a.target)}/${a.target})</div>
+                    </div>
+                    <button class="btn-secondary" style="padding: 6px 10px; font-size: 10px; ${a.claimed ? 'opacity:0.4;' : ''}" onclick="Shop.claimAchievement(${a.id})">
+                        ${a.claimed ? 'Alındı' : (isReady ? 'Ödülü Al' : 'Kilitli')}
+                    </button>
+                </div>
+            `;
+        }).join("");
     }
 };
 
 const Shop = {
-    setTab(tab, el) {
-        currentShopTab = tab;
-        document.querySelectorAll(".shop-tab").forEach(t => t.classList.remove("active"));
-        el.classList.add("active");
-        UI.renderShop();
-    },
+    setTab(tab, el) { currentShopTab = tab; document.querySelectorAll(".shop-tab").forEach(t => t.classList.remove("active")); el.classList.add("active"); UI.renderShop(); },
     selectItem(category, id) {
-        const items = ShopItems[category];
-        const item = items.find(x => x.id === id);
-        if (!item) return;
-
-        const selectedKey = category === "balls" ? "selectedBall" :
-                            category === "trails" ? "selectedTrail" :
-                            category === "themes" ? "selectedTheme" : "selectedBadge";
-
+        const items = ShopItems[category]; const item = items.find(x => x.id === id); if (!item) return;
+        const selectedKey = category === "balls" ? "selectedBall" : category === "trails" ? "selectedTrail" : category === "themes" ? "selectedTheme" : "selectedBadge";
         if (Storage.data.unlockedItems.includes(id)) {
-            Storage.data[selectedKey] = id;
-            Sound.btn();
-            Haptic.light();
-            const resolved = resolveActiveTheme(Storage.data.maxUnlockedLevel, 0, "level");
-            BackgroundEngine.setTheme(resolved, false);
+            Storage.data[selectedKey] = id; Sound.btn(); Haptic.light();
+            BackgroundEngine.setTheme(resolveActiveTheme(Storage.data.maxUnlockedLevel, 0, "level"), false);
         } else if (Storage.data.coins >= item.price) {
-            Storage.data.coins -= item.price;
-            Storage.data.unlockedItems.push(id);
-            Storage.data[selectedKey] = id;
-            Sound.coin();
-            Haptic.medium();
-            const resolved = resolveActiveTheme(Storage.data.maxUnlockedLevel, 0, "level");
-            BackgroundEngine.setTheme(resolved, false);
+            Storage.data.coins -= item.price; Storage.data.unlockedItems.push(id); Storage.data[selectedKey] = id;
+            Sound.coin(); Haptic.medium();
+            BackgroundEngine.setTheme(resolveActiveTheme(Storage.data.maxUnlockedLevel, 0, "level"), false);
         }
-        Storage.save();
-        UI.updateMenuData();
+        Storage.save(); UI.updateMenuData();
+    },
+    buyPowerup(targetKey, price) {
+        if (Storage.data.coins >= price) {
+            Storage.data.coins -= price; if (!Storage.data.inventory[targetKey]) Storage.data.inventory[targetKey] = 0;
+            Storage.data.inventory[targetKey]++; Storage.save(); Sound.coin(); Haptic.medium(); UI.updateMenuData();
+        } else { Sound.hit(); Haptic.light(); }
+    },
+    buyUpgrade(id, price, max) {
+        if ((Storage.data.upgrades[id] || 0) < max && Storage.data.coins >= price) {
+            Storage.data.coins -= price; Storage.data.upgrades[id] = (Storage.data.upgrades[id] || 0) + 1;
+            Storage.save(); Sound.coin(); Haptic.medium(); UI.updateMenuData();
+        } else { Sound.hit(); Haptic.light(); }
+    },
+    claimAchievement(id) {
+        const ach = Storage.data.achievements.find(a => a.id === id);
+        if (ach && ach.current >= ach.target && !ach.claimed) {
+            ach.claimed = true; Storage.data.coins += ach.reward; Storage.save();
+            Sound.victory(); Haptic.medium(); UI.updateMenuData();
+        }
     }
 };
 
 const Settings = {
     toggle(key) {
         Storage.data.settings[key] = !Storage.data.settings[key];
-        Storage.save();
-        Sound.btn();
-        Haptic.light();
-        if (key === "bgm") {
-            if (Storage.data.settings.bgm) Sound.startBGM();
-            else Sound.stopBGM();
-        }
+        Storage.save(); Sound.btn(); Haptic.light();
+        if (key === "bgm") { if (Storage.data.settings.bgm) Sound.startBGM(); else Sound.stopBGM(); }
         this.syncToggles();
     },
     syncToggles() {
         ['sfx', 'bgm', 'vibration'].forEach(k => {
             const el = document.getElementById(`toggle-${k === 'vibration' ? 'vibrate' : k}`);
-            if (el) {
-                if (Storage.data.settings[k]) el.classList.add("on");
-                else el.classList.remove("on");
-            }
+            if (el) { if (Storage.data.settings[k]) el.classList.add("on"); else el.classList.remove("on"); }
         });
     }
 };
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   13. BAŞLATMA VE DOĞRULAMA (INITIALIZATION)
+   12. BAŞLANGIÇ
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 Storage.load();
-
-const initialTheme = resolveActiveTheme(Storage.data.maxUnlockedLevel, 0, "level");
-BackgroundEngine.init(initialTheme);
-
+BackgroundEngine.init(resolveActiveTheme(Storage.data.maxUnlockedLevel, 0, "level"));
 UI.updateMenuData();
 mainLoop();
 </script>
