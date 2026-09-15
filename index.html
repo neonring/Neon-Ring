@@ -512,7 +512,7 @@ const Haptic = {
 };
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   2. VERİ YAPISI (20 GÖREV, 20 BAŞARIM, YÜKSELTMELER)
+   2. VERİ YAPISI
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 const Storage = {
     key: "sferis_game_save_v7",
@@ -563,7 +563,7 @@ const Storage = {
 };
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   3. ZENGİN MAĞAZA VE GELİŞTİRME ÖĞELERİ
+   3. MAĞAZA & YÜKSELTME ÖĞELERİ
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 const ShopItems = {
     balls: [
@@ -610,12 +610,12 @@ const UpgradeItems = [
    4. TEMALAR & GRAFİK MOTORU
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 const LevelThemes = [
-    { minLevel: 1, maxLevel: 5, bgTop: "#040b18", bgBot: "#0d1b33", ringHue: 195, pType: "ambient", bannerText: "BÖLGE 1: SAKİN BAŞLANGIÇ" },
-    { minLevel: 6, maxLevel: 10, bgTop: "#03040a", bgBot: "#0a0c20", ringHue: 235, pType: "stars", bannerText: "BÖLGE 2: DERİN UZAY" },
-    { minLevel: 11, maxLevel: 15, bgTop: "#140404", bgBot: "#260808", ringHue: 15, pType: "ember", bannerText: "BÖLGE 3: VOLKANİK ENERJİ" },
-    { minLevel: 16, maxLevel: 20, bgTop: "#04101a", bgBot: "#0a2233", ringHue: 180, pType: "snow", bannerText: "BÖLGE 4: BUZUL KRİSTALLERİ" },
-    { minLevel: 21, maxLevel: 25, bgTop: "#0f041a", bgBot: "#210938", ringHue: 290, pType: "nebula", bannerText: "BÖLGE 5: KOZMİK NEBULA" },
-    { minLevel: 26, maxLevel: 9999, bgTop: "#141103", bgBot: "#2e2708", ringHue: 45, pType: "matrix", bannerText: "BÖLGE 6: USTALIK ÇEMBERİ" }
+    { minLevel: 1, maxLevel: 5, bgTop: "#040b18", bgBot: "#0d1b33", ringHue: 195, bannerText: "BÖLGE 1: SAKİN BAŞLANGIÇ" },
+    { minLevel: 6, maxLevel: 10, bgTop: "#03040a", bgBot: "#0a0c20", ringHue: 235, bannerText: "BÖLGE 2: DERİN UZAY" },
+    { minLevel: 11, maxLevel: 15, bgTop: "#140404", bgBot: "#260808", ringHue: 15, bannerText: "BÖLGE 3: VOLKANİK ENERJİ" },
+    { minLevel: 16, maxLevel: 20, bgTop: "#04101a", bgBot: "#0a2233", ringHue: 180, bannerText: "BÖLGE 4: BUZUL KRİSTALLERİ" },
+    { minLevel: 21, maxLevel: 25, bgTop: "#0f041a", bgBot: "#210938", ringHue: 290, bannerText: "BÖLGE 5: KOZMİK NEBULA" },
+    { minLevel: 26, maxLevel: 9999, bgTop: "#141103", bgBot: "#2e2708", ringHue: 45, bannerText: "BÖLGE 6: USTALIK ÇEMBERİ" }
 ];
 
 function resolveActiveTheme(level, score, mode) {
@@ -642,7 +642,12 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 let W = window.innerWidth, H = window.innerHeight;
 
-function resize() { W = window.innerWidth; H = window.innerHeight; canvas.width = W; canvas.height = H; }
+function resize() {
+    W = window.innerWidth; H = window.innerHeight;
+    canvas.width = W; canvas.height = H;
+    if (Ball.x > W) Ball.x = W / 2;
+    if (Ball.y > H) Ball.y = H * 0.22;
+}
 window.addEventListener("resize", resize);
 resize();
 
@@ -677,6 +682,7 @@ const BackgroundEngine = {
         for (let p of this.particles) {
             p.x += p.vx; p.y += p.vy;
             if (p.y < 0) { p.y = H; p.x = Math.random() * W; }
+            if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
             ctx.globalAlpha = p.alpha;
             ctx.fillStyle = "#ffffff";
             ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill();
@@ -717,16 +723,22 @@ class ParticleEngine {
 const fx = new ParticleEngine();
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   6. OYUN NESNELERİ (TOP & HALKA)
+   6. OYUN NESNELERİ (GÜVENLİ KOORDİNATLAR)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 const Ball = {
-    x: W / 2, y: H * 0.22, radius: 13, vx: 0, friction: 0.89, maxSpeed: 15,
-    reset() { this.x = W / 2; this.y = H * 0.22; this.vx = 0; },
+    x: 0, y: 0, radius: 13, vx: 0, friction: 0.89, maxSpeed: 15,
+    reset() { 
+        this.x = W / 2; 
+        this.y = Math.min(H * 0.22, H - 50); 
+        this.vx = 0; 
+    },
     update() {
         this.x += this.vx; this.vx *= this.friction;
         if (Math.abs(this.vx) < 0.01) this.vx = 0;
-        if (this.x - this.radius < 0) { this.x = this.radius; this.vx = 0; }
-        if (this.x + this.radius > W) { this.x = W - this.radius; this.vx = 0; }
+        
+        if (isNaN(this.x) || this.x < this.radius) { this.x = this.radius; this.vx = 0; }
+        if (this.x > W - this.radius) { this.x = W - this.radius; this.vx = 0; }
+        if (isNaN(this.y)) { this.y = H * 0.22; }
 
         if (Game.active && Math.abs(this.vx) > 0.4) {
             const ballSkin = ShopItems.balls.find(b => b.id === Storage.data.selectedBall) || ShopItems.balls[0];
@@ -747,7 +759,7 @@ const Ball = {
 class Ring {
     constructor(speed, gapSize, moving = false, hue = 195) {
         this.y = H + 30; this.thickness = 20; this.speed = speed; this.gapSize = gapSize;
-        this.gapX = Math.random() * (W - this.gapSize - 40) + 20;
+        this.gapX = Math.random() * Math.max(10, (W - this.gapSize - 40)) + 20;
         this.passed = false;
         this.isPortal = Math.random() < 0.12;
         this.color = this.isPortal ? "#9d4edd" : `hsl(${(hue + Math.random() * 20) % 360}, 85%, 55%)`;
@@ -764,8 +776,8 @@ class Ring {
     draw(ctx) {
         ctx.save();
         ctx.fillStyle = this.color;
-        ctx.fillRect(0, this.y, this.gapX, this.thickness);
-        ctx.fillRect(this.gapX + this.gapSize, this.y, W - (this.gapX + this.gapSize), this.thickness);
+        ctx.fillRect(0, this.y, Math.max(0, this.gapX), this.thickness);
+        ctx.fillRect(this.gapX + this.gapSize, this.y, Math.max(0, W - (this.gapX + this.gapSize)), this.thickness);
 
         ctx.fillStyle = this.isPortal ? "#ffd700" : "#ffffff";
         ctx.beginPath();
@@ -821,7 +833,7 @@ const Game = {
         this.score++; this.combo++; Sound.pass(); Haptic.light();
         fx.emit(Ball.x, Ball.y, r.isPortal ? "#9d4edd" : "#00f0ff", 6);
 
-        if (r.isPortal) { Sound.portal(); Storage.data.coins += 5; this.updateAchievement(2, 1); }
+        if (r.isPortal) { Storage.data.coins += 5; }
 
         this.updateTaskProgress(1);
         this.updateAchievementProgress(1);
@@ -918,13 +930,25 @@ const Game = {
 };
 
 /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   8. KONTROLLER
+   8. GÜVENLİ KONTROL (TOUCH & MOUSE FIX)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 let lastTouchX = 0; let isDragging = false;
-function onTouchStart(e) { if (!Game.active) return; isDragging = true; lastTouchX = e.touches ? e.touches[0].clientX : e.clientX; }
+
+function getClientX(e) {
+    if (e.touches && e.touches.length > 0) return e.touches[0].clientX;
+    if (e.changedTouches && e.changedTouches.length > 0) return e.changedTouches[0].clientX;
+    return e.clientX || 0;
+}
+
+function onTouchStart(e) { 
+    if (!Game.active) return; 
+    isDragging = true; 
+    lastTouchX = getClientX(e); 
+}
+
 function onTouchMove(e) {
     if (!isDragging || !Game.active) return;
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientX = getClientX(e);
     const deltaX = clientX - lastTouchX;
     const magBonus = 1 + (Storage.data.upgrades.magnetLevel || 0) * 0.08;
     Ball.vx += deltaX * 0.85 * 0.2 * magBonus;
