@@ -1,1249 +1,3319 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <link rel="manifest" href="manifest.json">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Sferis: Halka Yolculuğu</title>
-    <style>
-        :root {
-            --bg-dark: #04060b;
-            --primary: #00f0ff;
-            --primary-glow: rgba(0, 240, 255, 0.35);
-            --secondary: #ff0055;
-            --accent: #ffd700;
-            --card-bg: rgba(10, 15, 28, 0.88);
-            --card-border: rgba(255, 255, 255, 0.1);
-            --text-main: #f4f7fc;
-            --text-dim: #6c7d9b;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Sferis: Halka Yolculuğu</title>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
+<style>
+*{
+box-sizing:border-box;
+-webkit-tap-highlight-color:transparent;
+user-select:none;
+}
 
-        body, html {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-        }
+html,body{
+margin:0;
+width:100%;
+height:100%;
+overflow:hidden;
+background:#050816;
+color:#fff;
+font-family:Arial,Helvetica,sans-serif;
+}
 
-        #game-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
+body{
+touch-action:none;
+}
 
-        canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: block;
-            z-index: 1;
-            pointer-events: none; /* Canvas tıklamaları engellemesin, sadece çizim yapsın */
-        }
+canvas{
+position:fixed;
+inset:0;
+width:100%;
+height:100%;
+display:block;
+background:#050816;
+}
 
-        .screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: calc(env(safe-area-inset-top, 20px) + 12px) 20px calc(env(safe-area-inset-bottom, 20px) + 16px);
-            opacity: 0;
-            pointer-events: none;
-            transform: scale(0.97);
-            transition: opacity 0.25s ease, transform 0.25s ease;
-        }
+.screen{
+position:fixed;
+inset:0;
+display:none;
+overflow-y:auto;
+padding:20px;
+z-index:10;
+background:
+radial-gradient(circle at 50% 0%,rgba(0,220,255,.12),transparent 40%),
+linear-gradient(180deg,#071022,#03050d);
+}
 
-        .screen.active {
-            opacity: 1;
-            pointer-events: auto;
-            transform: scale(1);
-        }
+.screen.active{
+display:block;
+}
 
-        .glass-panel {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 18px;
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
+.center{
+min-height:100%;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+}
 
-        .header-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            z-index: 5;
-        }
+.logo{
+font-size:38px;
+font-weight:900;
+letter-spacing:3px;
+text-align:center;
+color:#72f7ff;
+text-shadow:0 0 20px #00d9ff;
+}
 
-        .currency-badge {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 6px 14px;
-            border-radius: 20px;
-            border: 1px solid rgba(255, 215, 0, 0.3);
-            font-weight: 800;
-            color: var(--accent);
-            font-size: 14px;
-        }
+.subtitle{
+color:#8ea2bd;
+margin:8px 0 25px;
+text-align:center;
+}
 
-        .icon-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #fff;
-            font-size: 18px;
-            cursor: pointer;
-            outline: none;
-        }
+.panel{
+width:min(900px,100%);
+margin:0 auto;
+background:rgba(9,18,38,.88);
+border:1px solid rgba(94,220,255,.18);
+border-radius:22px;
+padding:18px;
+box-shadow:0 15px 50px rgba(0,0,0,.35);
+}
 
-        .icon-btn:active { transform: scale(0.92); }
+button{
+border:1px solid rgba(105,230,255,.25);
+background:linear-gradient(180deg,#142a4a,#0d1c34);
+color:#fff;
+border-radius:14px;
+padding:13px 15px;
+font-size:15px;
+font-weight:700;
+cursor:pointer;
+transition:.15s;
+}
 
-        .btn-primary {
-            background: linear-gradient(135deg, #00f0ff 0%, #0066ff 100%);
-            color: #030814;
-            border: none;
-            border-radius: 20px;
-            padding: 14px 24px;
-            font-size: 15px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            box-shadow: 0 6px 20px var(--primary-glow);
-            cursor: pointer;
-            outline: none;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            text-transform: uppercase;
-        }
+button:active{
+transform:scale(.96);
+}
 
-        .btn-primary:active { transform: scale(0.96); }
+button:hover{
+border-color:#62efff;
+box-shadow:0 0 15px rgba(0,220,255,.16);
+}
 
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 10px 16px;
-            font-size: 14px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 6px;
-        }
+.primary{
+background:linear-gradient(135deg,#00aeea,#7a4dff);
+}
 
-        .btn-secondary:active { transform: scale(0.96); background: rgba(255, 255, 255, 0.1); }
+.danger{
+background:linear-gradient(135deg,#8c2038,#4b1020);
+}
 
-        /* ANA MENÜ */
-        .brand-box { text-align: center; margin-top: 4vh; }
-        .brand-title {
-            font-size: 38px; font-weight: 900; letter-spacing: 4px;
-            background: linear-gradient(180deg, #ffffff 20%, var(--primary) 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 2px;
-        }
-        .brand-sub { font-size: 10px; text-transform: uppercase; letter-spacing: 3px; color: var(--text-dim); font-weight: 700; }
+.back{
+margin-bottom:15px;
+}
 
-        .mode-selection-card { padding: 14px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 8px; }
-        .mode-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .mode-card {
-            padding: 12px 8px; border-radius: 14px; background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--card-border); text-align: center; cursor: pointer; transition: all 0.2s;
-        }
-        .mode-card:active { transform: scale(0.95); background: rgba(0, 240, 255, 0.08); border-color: var(--primary); }
-        .mode-icon { font-size: 22px; margin-bottom: 2px; }
-        .mode-title { font-size: 12px; font-weight: 800; letter-spacing: 0.5px; }
-        .mode-desc { font-size: 9px; color: var(--text-dim); margin-top: 2px; }
+.menu-grid{
+width:min(600px,100%);
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+}
 
-        /* HUD */
-        #hud-layer {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 5; pointer-events: none; display: none; padding: calc(env(safe-area-inset-top, 20px) + 8px) 16px;
-        }
-        .hud-content { display: flex; justify-content: space-between; align-items: flex-start; width: 100%; }
-        .hud-box { background: rgba(4, 6, 11, 0.75); border: 1px solid rgba(255, 255, 255, 0.08); padding: 6px 12px; border-radius: 12px; backdrop-filter: blur(8px); }
-        .hud-lbl { font-size: 9px; color: var(--text-dim); font-weight: 800; letter-spacing: 0.5px; }
-        .hud-val { font-size: 18px; font-weight: 900; color: #fff; }
-        .level-progress-bar { width: 100px; height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; overflow: hidden; margin: 4px 0; }
-        .level-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--accent)); transition: width 0.15s ease-out; }
-        .hud-combo-tag {
-            position: absolute; top: calc(env(safe-area-inset-top, 20px) + 55px); right: 16px;
-            font-size: 12px; font-weight: 900; color: var(--accent); background: rgba(255, 215, 0, 0.15);
-            border: 1px solid rgba(255, 215, 0, 0.3); padding: 3px 8px; border-radius: 8px; opacity: 0; transition: all 0.2s;
-        }
-        .hud-combo-tag.active { opacity: 1; transform: translateY(0); }
+.menu-grid button:last-child{
+grid-column:1/-1;
+}
 
-        .theme-banner {
-            position: absolute; top: calc(env(safe-area-inset-top, 20px) + 60px); left: 50%;
-            transform: translateX(-50%) translateY(-10px); background: rgba(4, 6, 11, 0.9);
-            border: 1px solid var(--primary); padding: 6px 18px; border-radius: 16px; font-size: 11px;
-            font-weight: 800; color: var(--primary); letter-spacing: 1px; text-transform: uppercase;
-            box-shadow: 0 4px 15px var(--primary-glow); opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-        .theme-banner.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.big-btn{
+min-height:62px;
+font-size:16px;
+}
 
-        /* LEVEL GRID */
-        .level-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 10px 0; }
-        .level-node {
-            aspect-ratio: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background: rgba(255, 255, 255, 0.03); border: 1px solid var(--card-border); border-radius: 14px; font-size: 15px; font-weight: 800; cursor: pointer;
-        }
-        .level-node.completed { border-color: var(--primary); color: var(--primary); background: rgba(0, 240, 255, 0.05); }
-        .level-node.locked { opacity: 0.3; cursor: not-allowed; }
-        .level-node.current { border-color: var(--accent); box-shadow: 0 0 12px rgba(255, 215, 0, 0.3); color: var(--accent); }
+.stat-row{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+margin:15px 0;
+}
 
-        /* MAĞAZA & SEKME */
-        .shop-tabs { display: flex; gap: 6px; overflow-x: auto; padding: 6px 0 12px 0; border-bottom: 1px solid var(--card-border); }
-        .shop-tabs::-webkit-scrollbar { display: none; }
-        .shop-tab { padding: 5px 12px; border-radius: 10px; background: rgba(255, 255, 255, 0.04); font-size: 11px; font-weight: 700; white-space: nowrap; color: var(--text-dim); cursor: pointer; }
-        .shop-tab.active { background: var(--primary); color: #030814; }
+.stat{
+background:rgba(255,255,255,.04);
+border:1px solid rgba(255,255,255,.07);
+padding:13px;
+border-radius:14px;
+}
 
-        .shop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 12px; }
-        .shop-card { padding: 12px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; cursor: pointer; border: 1px solid var(--card-border); border-radius: 14px; background: rgba(255, 255, 255, 0.02); }
-        .shop-card.selected { border-color: var(--primary); box-shadow: 0 0 12px var(--primary-glow); }
-        .shop-preview { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        .shop-item-name { font-size: 12px; font-weight: 700; }
-        .shop-item-status { font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 6px; background: rgba(255, 255, 255, 0.05); }
+.stat small{
+display:block;
+color:#8091aa;
+margin-bottom:5px;
+}
 
-        .modal-body { flex: 1; overflow-y: auto; margin: 12px 0; padding-right: 2px; }
-        .modal-body::-webkit-scrollbar { display: none; }
-        .list-stack { display: flex; flex-direction: column; gap: 8px; }
-        .list-row { padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; }
+.stat strong{
+font-size:21px;
+}
 
-        .toggle-switch { width: 44px; height: 24px; background: rgba(255, 255, 255, 0.1); border-radius: 12px; position: relative; cursor: pointer; transition: background 0.2s; }
-        .toggle-switch.on { background: var(--primary); }
-        .toggle-knob { width: 18px; height: 18px; background: #fff; border-radius: 50%; position: absolute; top: 3px; left: 3px; transition: transform 0.2s; }
-        .toggle-switch.on .toggle-knob { transform: translateX(20px); }
+.section-title{
+margin:8px 0 14px;
+color:#70f3ff;
+letter-spacing:1px;
+}
 
-        .result-card { padding: 22px 16px; text-align: center; margin: auto 0; }
-        .result-title { font-size: 26px; font-weight: 900; letter-spacing: 1px; margin-bottom: 4px; }
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 16px 0; }
-    </style>
+.list{
+display:grid;
+gap:10px;
+}
+
+.card{
+background:rgba(255,255,255,.035);
+border:1px solid rgba(255,255,255,.07);
+border-radius:16px;
+padding:14px;
+}
+
+.card.done{
+border-color:rgba(50,255,150,.45);
+background:rgba(30,120,75,.10);
+}
+
+.card-head{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+}
+
+.card-title{
+font-weight:800;
+}
+
+.card-desc{
+color:#9aabc0;
+font-size:13px;
+margin-top:5px;
+}
+
+.reward{
+color:#ffd75a;
+font-weight:800;
+white-space:nowrap;
+}
+
+.progress{
+height:8px;
+background:#0b1425;
+border-radius:20px;
+overflow:hidden;
+margin-top:12px;
+}
+
+.progress > div{
+height:100%;
+width:0;
+background:linear-gradient(90deg,#00e5ff,#8f62ff);
+border-radius:20px;
+}
+
+.badge{
+display:inline-block;
+padding:5px 9px;
+border-radius:20px;
+font-size:11px;
+font-weight:900;
+margin-top:8px;
+}
+
+.normal{
+background:#26354a;
+color:#c8d3df;
+}
+
+.rare{
+background:#123f64;
+color:#5ed8ff;
+}
+
+.epic{
+background:#432269;
+color:#d59aff;
+}
+
+.legendary{
+background:#654710;
+color:#ffd866;
+}
+
+.shop-tabs{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:7px;
+margin-bottom:15px;
+}
+
+.shop-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+
+.shop-item{
+position:relative;
+min-height:175px;
+display:flex;
+flex-direction:column;
+justify-content:space-between;
+}
+
+.item-icon{
+font-size:38px;
+text-align:center;
+padding:8px;
+}
+
+.item-name{
+font-weight:800;
+}
+
+.item-price{
+color:#ffd75a;
+margin:5px 0;
+}
+
+.discount{
+color:#58ff9d;
+font-size:12px;
+font-weight:900;
+}
+
+.locked{
+opacity:.65;
+}
+
+.selected{
+border-color:#61f3ff;
+box-shadow:0 0 20px rgba(0,220,255,.15);
+}
+
+.level-grid{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:9px;
+}
+
+.level-btn{
+min-height:58px;
+}
+
+.level-btn.locked{
+filter:grayscale(1);
+}
+
+.level-btn.boss{
+border-color:#ff4778;
+box-shadow:0 0 13px rgba(255,50,100,.15);
+}
+
+.xp-box{
+margin:12px 0;
+}
+
+.xp-bar{
+height:13px;
+background:#0b1324;
+border-radius:20px;
+overflow:hidden;
+}
+
+.xp-fill{
+height:100%;
+background:linear-gradient(90deg,#00e5ff,#a05cff);
+}
+
+.profile-head{
+text-align:center;
+}
+
+.avatar{
+width:80px;
+height:80px;
+margin:0 auto 10px;
+border-radius:50%;
+display:grid;
+place-items:center;
+font-size:38px;
+background:radial-gradient(circle,#36efff,#4020a0);
+box-shadow:0 0 25px rgba(0,220,255,.3);
+}
+
+.mode-grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
+}
+
+.mode-card{
+min-height:100px;
+text-align:left;
+}
+
+.mode-card b{
+font-size:17px;
+}
+
+.mode-card span{
+display:block;
+color:#8ea0b8;
+font-size:12px;
+margin-top:7px;
+}
+
+#hud{
+position:fixed;
+z-index:20;
+top:12px;
+left:12px;
+right:12px;
+display:none;
+pointer-events:none;
+}
+
+.hud-row{
+display:flex;
+justify-content:space-between;
+gap:8px;
+}
+
+.hud-box{
+background:rgba(3,8,20,.72);
+border:1px solid rgba(100,220,255,.2);
+backdrop-filter:blur(8px);
+padding:8px 11px;
+border-radius:12px;
+font-size:13px;
+}
+
+#combo{
+position:fixed;
+z-index:25;
+top:100px;
+left:50%;
+transform:translateX(-50%) scale(.7);
+opacity:0;
+pointer-events:none;
+font-size:31px;
+font-weight:900;
+color:#ffe36a;
+text-shadow:0 0 20px #ff9d00;
+transition:.2s;
+}
+
+#combo.show{
+opacity:1;
+transform:translateX(-50%) scale(1);
+}
+
+#powerbar{
+position:fixed;
+z-index:21;
+bottom:18px;
+left:50%;
+transform:translateX(-50%);
+display:none;
+gap:7px;
+pointer-events:auto;
+}
+
+.power-btn{
+width:57px;
+height:57px;
+padding:3px;
+font-size:22px;
+position:relative;
+}
+
+.power-btn small{
+display:block;
+font-size:8px;
+}
+
+#toast{
+position:fixed;
+z-index:100;
+top:20px;
+left:50%;
+transform:translate(-50%,-130px);
+opacity:0;
+min-width:260px;
+max-width:90%;
+background:rgba(8,15,31,.96);
+border:1px solid #56eaff;
+border-radius:17px;
+padding:13px 16px;
+text-align:center;
+box-shadow:0 0 30px rgba(0,210,255,.22);
+transition:.3s;
+}
+
+#toast.show{
+transform:translate(-50%,0);
+opacity:1;
+}
+
+#bossBanner{
+position:fixed;
+z-index:23;
+top:60px;
+left:50%;
+transform:translateX(-50%);
+display:none;
+color:#ff5d8a;
+font-size:18px;
+font-weight:900;
+text-shadow:0 0 15px #ff164f;
+}
+
+.victory-box,.gameover-box{
+text-align:center;
+width:min(520px,100%);
+}
+
+.reward-big{
+font-size:28px;
+color:#ffd75a;
+font-weight:900;
+margin:15px 0;
+}
+
+.mode-chip{
+display:inline-block;
+padding:6px 10px;
+border-radius:20px;
+background:#162843;
+color:#6eeeff;
+font-size:12px;
+font-weight:800;
+margin-bottom:12px;
+}
+
+.toggle{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:14px;
+margin-bottom:8px;
+}
+
+.toggle span{
+color:#a4b5c9;
+}
+
+.on{
+color:#56ffad;
+}
+
+.off{
+color:#ff6888;
+}
+
+@media(max-width:500px){
+.logo{font-size:31px}
+.menu-grid,.mode-grid{grid-template-columns:1fr 1fr}
+.shop-grid{grid-template-columns:1fr 1fr}
+.level-grid{grid-template-columns:repeat(4,1fr)}
+.screen{padding:14px}
+.shop-tabs button{font-size:11px;padding:10px 4px}
+}
+</style>
 </head>
+
 <body>
 
-<div id="game-container">
-    <canvas id="gameCanvas"></canvas>
+<canvas id="gameCanvas"></canvas>
 
-    <!-- OYUN HUD -->
-    <div id="hud-layer">
-        <div class="hud-content">
-            <div class="hud-box">
-                <div class="hud-lbl">SKOR</div>
-                <div class="hud-val" id="hud-score">0</div>
-            </div>
-            <div class="hud-box" style="display: flex; flex-direction: column; align-items: center;">
-                <div class="hud-lbl" id="hud-mode-title">LEVEL 1</div>
-                <div class="level-progress-bar" id="hud-progress-wrap">
-                    <div class="level-progress-fill" id="hud-progress"></div>
-                </div>
-                <div style="font-size: 11px; margin-top: 2px;" id="hud-hearts">❤️</div>
-            </div>
-            <div class="hud-box" style="text-align: right;">
-                <div class="hud-lbl">COIN</div>
-                <div class="hud-val" id="hud-coins" style="color: var(--accent);">0</div>
-            </div>
-        </div>
-        <div class="hud-combo-tag" id="hud-combo">COMBO x2</div>
-        <div class="theme-banner" id="theme-banner">YENİ BÖLGE: DERİN UZAY</div>
-    </div>
-
-    <!-- 1. ANA MENÜ -->
-    <div id="main-menu" class="screen active">
-        <div class="header-bar">
-            <div class="currency-badge">🪙 <span id="menu-coins">0</span></div>
-            <button class="icon-btn" onclick="UI.showScreen('settings-menu')">⚙️</button>
-        </div>
-
-        <div class="brand-box">
-            <h1 class="brand-title">SFERIS</h1>
-            <div class="brand-sub">Halka Yolculuğu</div>
-        </div>
-
-        <div>
-            <div class="glass-panel mode-selection-card">
-                <div style="font-size: 10px; font-weight: 800; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px;">OYUN MODU</div>
-                <div class="mode-row">
-                    <div class="mode-card" onclick="UI.showScreen('level-select-menu')">
-                        <div class="mode-icon">🏆</div>
-                        <div class="mode-title">LEVELLİ</div>
-                        <div class="mode-desc">Bölüm Hedefleri</div>
-                    </div>
-                    <div class="mode-card" onclick="Game.startEndless()">
-                        <div class="mode-icon">♾️</div>
-                        <div class="mode-title">SERBEST</div>
-                        <div class="mode-desc">Sonsuz Skor</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="glass-panel list-row" style="margin-bottom: 8px; padding: 8px 14px;">
-                <div style="font-size: 11px; font-weight: 700; color: var(--text-dim);">Serbest Rekor: <span id="menu-endless-high" style="color:#fff; font-weight: 900;">0</span></div>
-                <div style="font-size: 11px; font-weight: 700; color: var(--text-dim);">Son Bölüm: <span id="menu-level-indicator" style="color:var(--primary); font-weight: 900;">1</span></div>
-            </div>
-
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 6px;">
-                <button class="btn-secondary" onclick="UI.showScreen('shop-menu')" style="padding: 8px 4px; font-size: 11px;">🛍️ Market</button>
-                <button class="btn-secondary" onclick="UI.showScreen('tasks-menu')" style="padding: 8px 4px; font-size: 11px;">📋 Görev</button>
-                <button class="btn-secondary" onclick="UI.showScreen('achievements-menu')" style="padding: 8px 4px; font-size: 11px;">🏅 Başar</button>
-                <button class="btn-secondary" onclick="UI.showScreen('upgrades-menu')" style="padding: 8px 4px; font-size: 11px;">⚡ Geliştir</button>
-            </div>
-            
-            <button class="btn-primary" style="width: 100%; padding: 10px; font-size: 13px;" onclick="SpinWheel.open()">🎡 Günlük Şans Çarkı</button>
-        </div>
-    </div>
-
-    <!-- 2. LEVEL SEÇİMİ -->
-    <div id="level-select-menu" class="screen">
-        <div class="header-bar">
-            <button class="icon-btn" onclick="UI.showScreen('main-menu')">‹</button>
-            <div style="font-size: 15px; font-weight: 800;">BÖLÜM SEÇİMİ</div>
-            <div style="width: 42px;"></div>
-        </div>
-        <div class="modal-body"><div class="level-grid" id="level-grid-container"></div></div>
-    </div>
-
-    <!-- 3. MAĞAZA -->
-    <div id="shop-menu" class="screen">
-        <div class="header-bar">
-            <button class="icon-btn" onclick="UI.showScreen('main-menu')">‹</button>
-            <div style="font-size: 15px; font-weight: 800;">MAĞAZA</div>
-            <div class="currency-badge">🪙 <span id="shop-coins">0</span></div>
-        </div>
-        <div class="shop-tabs">
-            <div class="shop-tab active" onclick="Shop.setTab('balls', this)">Toplar</div>
-            <div class="shop-tab" onclick="Shop.setTab('trails', this)">İzler</div>
-            <div class="shop-tab" onclick="Shop.setTab('themes', this)">Temalar</div>
-            <div class="shop-tab" onclick="Shop.setTab('powerups', this)">Güçler</div>
-            <div class="shop-tab" onclick="Shop.setTab('badges', this)">Rozetler</div>
-        </div>
-        <div class="modal-body"><div class="shop-grid" id="shop-grid-container"></div></div>
-    </div>
-
-    <!-- 4. DEVAMLI GÜÇLENDİRME (UPGRADES) -->
-    <div id="upgrades-menu" class="screen">
-        <div class="header-bar">
-            <button class="icon-btn" onclick="UI.showScreen('main-menu')">‹</button>
-            <div style="font-size: 15px; font-weight: 800;">KALICI YÜKSELTMELER</div>
-            <div class="currency-badge">🪙 <span id="upgrade-coins">0</span></div>
-        </div>
-        <div class="modal-body"><div class="list-stack" id="upgrades-container"></div></div>
-    </div>
-
-    <!-- 5. 20 ADET GÖREVLER -->
-    <div id="tasks-menu" class="screen">
-        <div class="header-bar">
-            <button class="icon-btn" onclick="UI.showScreen('main-menu')">‹</button>
-            <div style="font-size: 15px; font-weight: 800;">GÖREVLER (20 ADET)</div>
-            <div style="width: 42px;"></div>
-        </div>
-        <div class="modal-body"><div class="list-stack" id="task-container"></div></div>
-    </div>
-
-    <!-- 6. 20 ADET BAŞARIMLAR -->
-    <div id="achievements-menu" class="screen">
-        <div class="header-bar">
-            <button class="icon-btn" onclick="UI.showScreen('main-menu')">‹</button>
-            <div style="font-size: 15px; font-weight: 800;">BAŞARIMLAR (20 ADET)</div>
-            <div style="width: 42px;"></div>
-        </div>
-        <div class="modal-body"><div class="list-stack" id="achievement-container"></div></div>
-    </div>
-
-    <!-- 7. ŞANS ÇARKI -->
-    <div id="spin-menu" class="screen">
-        <div class="header-bar">
-            <button class="icon-btn" onclick="UI.showScreen('main-menu')">‹</button>
-            <div style="font-size: 15px; font-weight: 800;">ŞANS ÇARKI</div>
-            <div style="width: 42px;"></div>
-        </div>
-        <div class="modal-body" style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 18px;">
-            <div style="font-size: 55px;">🎡</div>
-            <div id="spin-result-text" style="font-size: 14px; font-weight: 700; color: var(--accent);">Her gün 1 kez ücretsiz çevir ve sürpriz ödülü kap!</div>
-            <button class="btn-primary" id="spin-btn" onclick="SpinWheel.spin()" style="width: 80%;">ÇARKI ÇEVİR</button>
-        </div>
-    </div>
-
-    <!-- 8. AYARLAR -->
-    <div id="settings-menu" class="screen">
-        <div class="header-bar">
-            <button class="icon-btn" onclick="UI.showScreen('main-menu')">‹</button>
-            <div style="font-size: 15px; font-weight: 800;">AYARLAR</div>
-            <div style="width: 42px;"></div>
-        </div>
-        <div class="modal-body">
-            <div class="list-stack">
-                <div class="glass-panel list-row">
-                    <div style="font-size: 13px; font-weight: 700;">🔊 Ses Efektleri</div>
-                    <div class="toggle-switch" id="toggle-sfx" onclick="Settings.toggle('sfx')"><div class="toggle-knob"></div></div>
-                </div>
-                <div class="glass-panel list-row">
-                    <div style="font-size: 13px; font-weight: 700;">🎵 Ortam Ambiyansı</div>
-                    <div class="toggle-switch" id="toggle-bgm" onclick="Settings.toggle('bgm')"><div class="toggle-knob"></div></div>
-                </div>
-                <div class="glass-panel list-row">
-                    <div style="font-size: 13px; font-weight: 700;">📳 Titreşim</div>
-                    <div class="toggle-switch" id="toggle-vibrate" onclick="Settings.toggle('vibration')"><div class="toggle-knob"></div></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 9. LEVEL TAMAMLANDI -->
-    <div id="victory-screen" class="screen">
-        <div></div>
-        <div class="glass-panel result-card">
-            <div class="result-title" style="color: var(--accent);">BÖLÜM TAMAM!</div>
-            <div style="font-size: 12px; color: var(--text-dim); margin-bottom: 12px;">Harika odaklanma.</div>
-            <div class="stats-grid">
-                <div class="glass-panel" style="padding: 10px;">
-                    <div class="hud-lbl">GEÇİLEN DELİK</div>
-                    <div class="hud-val" id="vic-score">0</div>
-                </div>
-                <div class="glass-panel" style="padding: 10px;">
-                    <div class="hud-lbl">KAZANILAN</div>
-                    <div class="hud-val" style="color: var(--accent);">+<span id="vic-coins">0</span> 🪙</div>
-                </div>
-            </div>
-            <button class="btn-primary" style="width: 100%; margin-bottom: 8px;" onclick="Game.nextLevel()">SONRAKİ BÖLÜM ❯</button>
-            <button class="btn-secondary" style="width: 100%;" onclick="UI.showScreen('level-select-menu')">BÖLÜMLER</button>
-        </div>
-        <div></div>
-    </div>
-
-    <!-- 10. GAME OVER -->
-    <div id="gameover-screen" class="screen">
-        <div></div>
-        <div class="glass-panel result-card">
-            <div class="result-title" style="color: var(--secondary);">DENEME BİTTİ</div>
-            <div id="gov-sub" style="font-size: 12px; color: var(--text-dim); margin-bottom: 12px;">Tekrar dene.</div>
-            <div class="stats-grid">
-                <div class="glass-panel" style="padding: 10px;">
-                    <div class="hud-lbl">SKOR</div>
-                    <div class="hud-val" id="gov-score">0</div>
-                </div>
-                <div class="glass-panel" style="padding: 10px;">
-                    <div class="hud-lbl">EN YÜKSEK</div>
-                    <div class="hud-val" id="gov-best">0</div>
-                </div>
-            </div>
-            <button class="btn-primary" style="width: 100%; margin-bottom: 8px;" onclick="Game.retry()">TEKRAR DENE ↺</button>
-            <button class="btn-secondary" style="width: 100%;" onclick="UI.showScreen('main-menu')">ANA MENÜ</button>
-        </div>
-        <div></div>
-    </div>
+<div id="hud">
+<div class="hud-row">
+<div class="hud-box">🏆 <b id="hudScore">0</b></div>
+<div class="hud-box">🪙 <b id="hudCoins">0</b></div>
+<div class="hud-box">🔥 <b id="hudCombo">0</b></div>
+<div class="hud-box">❤️ <b id="hudLives">1</b></div>
+</div>
+<div class="hud-row" style="margin-top:6px">
+<div class="hud-box" id="hudMode">BÖLÜM</div>
+<div class="hud-box">⭐ Lv.<b id="hudPlayerLevel">1</b></div>
+<div class="hud-box">XP <b id="hudXP">0</b></div>
+</div>
 </div>
 
+<div id="combo">🔥 x3 COMBO!</div>
+<div id="bossBanner">👑 BOSS SEVİYESİ</div>
+<div id="powerbar"></div>
+<div id="toast"></div>
+
+<!-- ANA MENÜ -->
+<section id="main-menu" class="screen active">
+<div class="center">
+<div class="logo">SFERIS</div>
+<div class="subtitle">Halka Yolculuğu</div>
+
+<div class="panel">
+<div class="stat-row">
+<div class="stat">
+<small>🪙 Coin</small>
+<strong id="menuCoins">0</strong>
+</div>
+<div class="stat">
+<small>⭐ Oyuncu Seviyesi</small>
+<strong id="menuPlayerLevel">1</strong>
+</div>
+</div>
+
+<div class="xp-box">
+<div style="display:flex;justify-content:space-between;font-size:12px">
+<span>XP</span>
+<span id="menuXP">0 / 100</span>
+</div>
+<div class="xp-bar">
+<div id="menuXPFill" class="xp-fill"></div>
+</div>
+</div>
+
+<div class="menu-grid">
+<button class="big-btn primary" onclick="UI.openLevels()">🎮 Bölümler</button>
+<button class="big-btn" onclick="Game.startEndless()">♾️ Serbest Mod</button>
+<button class="big-btn" onclick="UI.openModes()">⚡ Oyun Modları</button>
+<button class="big-btn" onclick="UI.openShop()">🛍️ Mağaza</button>
+<button class="big-btn" onclick="UI.openTasks()">🎯 Görevler</button>
+<button class="big-btn" onclick="UI.openAchievements()">🏆 Başarılar</button>
+<button class="big-btn" onclick="UI.openProfile()">👤 Profil</button>
+<button class="big-btn" onclick="UI.openStats()">📊 İstatistikler</button>
+<button class="big-btn" onclick="UI.openSettings()">⚙️ Ayarlar</button>
+</div>
+</div>
+</div>
+</section>
+
+<!-- BÖLÜMLER -->
+<section id="level-select-menu" class="screen">
+<div class="panel">
+<button class="back" onclick="UI.showScreen('main-menu')">← Geri</button>
+<h2 class="section-title">🎮 BÖLÜMLER</h2>
+<p style="color:#8fa0b5;font-size:13px">Her 5. seviye özel bir Boss seviyesidir.</p>
+<div id="levelGrid" class="level-grid"></div>
+</div>
+</section>
+
+<!-- MODLAR -->
+<section id="modes-menu" class="screen">
+<div class="panel">
+<button class="back" onclick="UI.showScreen('main-menu')">← Geri</button>
+<h2 class="section-title">⚡ OYUN MODLARI</h2>
+<div class="mode-grid">
+<button class="mode-card" onclick="Game.startMode('time')">
+⏱️ <b>Zamana Karşı</b>
+<span>60 saniyede mümkün olduğunca çok halka geç.</span>
+</button>
+<button class="mode-card" onclick="Game.startMode('one')">
+💀 <b>Tek Can</b>
+<span>Bir hata. İkinci şans yok.</span>
+</button>
+<button class="mode-card" onclick="Game.startMode('fast')">
+⚡ <b>Hızlı Mod</b>
+<span>Halkalar çok daha hızlı gelir.</span>
+</button>
+<button class="mode-card" onclick="Game.startMode('coin')">
+🪙 <b>Coin Yağmuru</b>
+<span>Daha fazla coin, daha fazla karmaşa.</span>
+</button>
+</div>
+</div>
+</section>
+
+<!-- MAĞAZA -->
+<section id="shop-menu" class="screen">
+<div class="panel">
+<button class="back" onclick="UI.showScreen('main-menu')">← Geri</button>
+<h2 class="section-title">🛍️ SFERIS MAĞAZA</h2>
+
+<div class="stat" style="margin-bottom:14px;text-align:center">
+🪙 <b id="shopCoins">0</b> Coin
+<div style="font-size:11px;color:#7890aa;margin-top:5px">
+Günlük mağaza her gün yenilenir.
+</div>
+</div>
+
+<div class="shop-tabs">
+<button onclick="Shop.setTab('balls')">🔵 Toplar</button>
+<button onclick="Shop.setTab('trails')">✨ İzler</button>
+<button onclick="Shop.setTab('themes')">🌌 Temalar</button>
+<button onclick="Shop.setTab('badges')">🏅 Rozetler</button>
+</div>
+
+<div id="dailyShop" class="card" style="margin-bottom:12px"></div>
+<div id="shopGrid" class="shop-grid"></div>
+</div>
+</section>
+
+<!-- GÖREVLER -->
+<section id="tasks-menu" class="screen">
+<div class="panel">
+<button class="back" onclick="UI.showScreen('main-menu')">← Geri</button>
+<h2 class="section-title">🎯 GÖREVLER</h2>
+<div class="card" id="dailyTasksInfo" style="margin-bottom:12px"></div>
+<div id="taskList" class="list"></div>
+</div>
+</section>
+
+<!-- BAŞARILAR -->
+<section id="achievements-menu" class="screen">
+<div class="panel">
+<button class="back" onclick="UI.showScreen('main-menu')">← Geri</button>
+<h2 class="section-title">🏆 BAŞARILAR</h2>
+<div id="achievementSummary" class="card" style="margin-bottom:12px"></div>
+<div id="achievementList" class="list"></div>
+</div>
+</section>
+
+<!-- PROFİL -->
+<section id="profile-menu" class="screen">
+<div class="panel">
+<button class="back" onclick="UI.showScreen('main-menu')">← Geri</button>
+
+<div class="profile-head">
+<div class="avatar">🌀</div>
+<h2 id="profileName">Sferis Pilot</h2>
+<div id="profileRank" class="badge epic">BRONZ</div>
+</div>
+
+<div class="xp-box">
+<div style="display:flex;justify-content:space-between">
+<b>⭐ Oyuncu Seviyesi <span id="profileLevel">1</span></b>
+<span id="profileXP">0/100 XP</span>
+</div>
+<div class="xp-bar">
+<div id="profileXPFill" class="xp-fill"></div>
+</div>
+</div>
+
+<div id="profileStats" class="stat-row"></div>
+</div>
+</section>
+
+<!-- İSTATİSTİK -->
+<section id="stats-menu" class="screen">
+<div class="panel">
+<button class="back" onclick="UI.showScreen('main-menu')">← Geri</button>
+<h2 class="section-title">📊 İSTATİSTİKLER</h2>
+<div id="statsGrid" class="stat-row"></div>
+</div>
+</section>
+
+<!-- AYARLAR -->
+<section id="settings-menu" class="screen">
+<div class="panel">
+<button class="back" onclick="UI.showScreen('main-menu')">← Geri</button>
+<h2 class="section-title">⚙️ AYARLAR</h2>
+
+<div class="card">
+<button class="toggle" style="width:100%" onclick="Settings.toggle('sfx')">
+🔊 Ses Efektleri
+<span id="setSfx"></span>
+</button>
+<button class="toggle" style="width:100%" onclick="Settings.toggle('bgm')">
+🎵 Müzik
+<span id="setBgm"></span>
+</button>
+<button class="toggle" style="width:100%" onclick="Settings.toggle('vibration')">
+📳 Titreşim
+<span id="setVibration"></span>
+</button>
+</div>
+
+<button class="danger" style="width:100%;margin-top:15px" onclick="Storage.reset()">🗑️ Kayıtları Sıfırla</button>
+</div>
+</section>
+
+<!-- ZAFER -->
+<section id="victory-screen" class="screen">
+<div class="center">
+<div class="panel victory-box">
+<div style="font-size:65px">🏆</div>
+<h1>SEVİYE TAMAMLANDI!</h1>
+<div id="victoryLevel" class="mode-chip"></div>
+<div id="victoryReward" class="reward-big"></div>
+<div id="victoryXP" style="color:#62eaff"></div>
+<div id="victoryBonus" class="card" style="margin:15px 0"></div>
+
+<button class="primary" style="width:100%;margin-bottom:9px" onclick="Game.nextLevel()">Sonraki Seviye →</button>
+<button style="width:100%" onclick="UI.openLevels()">Bölüm Seç</button>
+</div>
+</div>
+</section>
+
+<!-- GAME OVER -->
+<section id="gameover-screen" class="screen">
+<div class="center">
+<div class="panel gameover-box">
+<div style="font-size:65px">💥</div>
+<h1>OYUN BİTTİ</h1>
+<div id="gameoverText" style="color:#9aaabd"></div>
+<div id="gameoverScore" class="reward-big"></div>
+
+<button class="primary" style="width:100%;margin-bottom:9px" onclick="Game.retry()">🔄 Tekrar Dene</button>
+<button style="width:100%" onclick="UI.showScreen('main-menu')">Ana Menü</button>
+</div>
+</div>
+</section>
+
 <script>
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   1. SES & HAPTIC
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-const Sound = {
-    ctx: null, bgmGain: null,
-    init() {
-        if (!this.ctx) {
-            const AudioCtx = window.AudioContext || window.webkitAudioContext;
-            this.ctx = new AudioCtx();
-        }
-    },
-    playTone(freq, duration = 0.12, gainLvl = 0.12) {
-        if (!Storage.data.settings.sfx || !this.ctx) return;
-        try {
-            const osc = this.ctx.createOscillator();
-            const gain = this.ctx.createGain();
-            osc.type = "sine";
-            osc.frequency.setValueAtTime(freq, this.ctx.currentTime);
-            gain.gain.setValueAtTime(gainLvl, this.ctx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + duration);
-            osc.connect(gain); gain.connect(this.ctx.destination);
-            osc.start(); osc.stop(this.ctx.currentTime + duration);
-        } catch(e) {}
-    },
-    pass() { this.playTone(440, 0.08, 0.06); },
-    coin() { this.playTone(880, 0.1, 0.08); },
-    combo() { this.playTone(587.33, 0.14, 0.1); },
-    hit() { this.playTone(150, 0.18, 0.12); },
-    btn() { this.playTone(320, 0.04, 0.04); },
-    victory() { [440, 554.37, 659.25].forEach((f, i) => setTimeout(() => this.playTone(f, 0.15, 0.08), i * 100)); },
-    startBGM() {
-        if (!Storage.data.settings.bgm || !this.ctx || this.bgmGain) return;
-        try {
-            const osc = this.ctx.createOscillator();
-            this.bgmGain = this.ctx.createGain();
-            osc.type = "sine"; osc.frequency.setValueAtTime(110, this.ctx.currentTime);
-            this.bgmGain.gain.setValueAtTime(0.012, this.ctx.currentTime);
-            osc.connect(this.bgmGain); this.bgmGain.connect(this.ctx.destination);
-            osc.start();
-        } catch(e) {}
-    },
-    stopBGM() { if (this.bgmGain) { try { this.bgmGain.disconnect(); } catch(e) {} this.bgmGain = null; } }
-};
-
-const Haptic = {
-    trigger(ms) { if (Storage.data.settings.vibration && "vibrate" in navigator) { try { navigator.vibrate(ms); } catch(e) {} } },
-    light() { this.trigger(10); }, medium() { this.trigger(20); }, heavy() { this.trigger(40); }
-};
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   2. VERİ YAPISI
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-const Storage = {
-    key: "sferis_game_save_v7",
-    data: {
-        coins: 50,
-        currentLevel: 1,
-        maxUnlockedLevel: 1,
-        endlessHighScore: 0,
-        selectedBall: "cyan",
-        selectedTrail: "dots",
-        selectedTheme: "auto",
-        selectedBadge: "novice",
-        unlockedItems: ["cyan", "dots", "auto", "novice"],
-        inventory: { shield: 0, revive: 0, multiplier: 1 },
-        upgrades: { magnetLevel: 0, coinBonusLevel: 0, extraShieldLevel: 0 },
-        settings: { sfx: true, bgm: true, vibration: true },
-        lastSpinDate: "",
-        tasks: [],
-        achievements: []
-    },
-    initLists() {
-        if (this.data.tasks.length === 0) {
-            for (let i = 1; i <= 20; i++) {
-                let target = i * 15;
-                let reward = i * 10;
-                this.data.tasks.push({ id: i, desc: `${target} Halka Geç`, target, current: 0, reward, done: false });
-            }
-        }
-        if (this.data.achievements.length === 0) {
-            for (let i = 1; i <= 20; i++) {
-                let target = i * 20;
-                let reward = i * 15;
-                this.data.achievements.push({ id: i, title: `Ustalık ${i}`, desc: `Toplam ${target} Halka Geç`, target, current: 0, reward, claimed: false });
-            }
-        }
-    },
-    load() {
-        try {
-            const raw = localStorage.getItem(this.key);
-            if (raw) this.data = { ...this.data, ...JSON.parse(raw) };
-            if (!this.data.upgrades) this.data.upgrades = { magnetLevel: 0, coinBonusLevel: 0, extraShieldLevel: 0 };
-            this.initLists();
-        } catch(e) { this.initLists(); }
-    },
-    save() {
-        try { localStorage.setItem(this.key, JSON.stringify(this.data)); } catch(e) {}
-    }
-};
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   3. MAĞAZA & YÜKSELTME ÖĞELERİ
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-const ShopItems = {
-    balls: [
-        { id: "cyan", name: "Sferis Mavi", color: "#00f0ff", price: 0, icon: "🔵" },
-        { id: "amber", name: "Güneş Çekirdeği", color: "#ffd700", price: 60, icon: "🟡" },
-        { id: "ruby", name: "Lal Kristali", color: "#ff0055", price: 120, icon: "🔴" },
-        { id: "emerald", name: "Zümrüt Yeşili", color: "#00ff88", price: 200, icon: "🟢" },
-        { id: "purple", name: "Kozmik Mor", color: "#9d4edd", price: 300, icon: "🟣" },
-        { id: "white", name: "Saf Işık", color: "#ffffff", price: 450, icon: "⚪" }
-    ],
-    trails: [
-        { id: "dots", name: "Hafif Noktalar", price: 0, icon: "••" },
-        { id: "glow", name: "Işık İzi", price: 80, icon: "✨" },
-        { id: "plasma", name: "Kozmik Toz", price: 150, icon: "☄️" },
-        { id: "fire", name: "Alev Kuşağı", price: 250, icon: "🔥" }
-    ],
-    themes: [
-        { id: "auto", name: "Dinamik Seviye", price: 0, icon: "🔄", desc: "Level'e göre değişir" },
-        { id: "nebula", name: "Özel: Nebula", price: 100, icon: "🌌", bgTop: "#050714", bgBot: "#180a30", ringHue: 280 },
-        { id: "sunset", name: "Özel: Günbatımı", price: 180, icon: "🌇", bgTop: "#180812", bgBot: "#35101f", ringHue: 340 },
-        { id: "matrix", name: "Özel: Siber Ağ", price: 250, icon: "💻", bgTop: "#021208", bgBot: "#072615", ringHue: 145 },
-        { id: "cyber", name: "Özel: Neon Şehir", price: 350, icon: "🌆", bgTop: "#0a031a", bgBot: "#1e0b3b", ringHue: 300 }
-    ],
-    powerups: [
-        { id: "shield_item", name: "Koruma Kalkanı", price: 40, icon: "🛡️", desc: "1 Çarpışmayı Engeller", targetKey: "shield" },
-        { id: "revive_item", name: "Ekstra Can", price: 60, icon: "❤️", desc: "Yandığında Devam Et", targetKey: "revive" },
-        { id: "mult_item", name: "2X Puan Çarpanı", price: 100, icon: "⚡", desc: "Coin Kazancını 2 Katlar", targetKey: "multiplier" }
-    ],
-    badges: [
-        { id: "novice", name: "Kaşif", price: 0, icon: "🧭" },
-        { id: "steady", name: "Denge Ustası", price: 50, icon: "⚖️" },
-        { id: "master", name: "Halka Hakimi", price: 250, icon: "👑" },
-        { id: "legend", name: "Efsane Sferis", price: 500, icon: "🏆" }
-    ]
-};
-
-const UpgradeItems = [
-    { id: "coinBonusLevel", name: "Pasif Altın Artışı", desc: "Her toplanan coini kalıcı artırır", basePrice: 50, max: 5 },
-    { id: "magnetLevel", name: "Halka Çekim Alanı", desc: "Halkalardan puan kazanma toleransı", basePrice: 80, max: 5 },
-    { id: "extraShieldLevel", name: "Başlangıç Kalkanı", desc: "Her oyuna 1 kalkanla başlama şansı", basePrice: 120, max: 3 }
-];
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   4. TEMALAR & GRAFİK MOTORU
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-const LevelThemes = [
-    { minLevel: 1, maxLevel: 5, bgTop: "#040b18", bgBot: "#0d1b33", ringHue: 195, bannerText: "BÖLGE 1: SAKİN BAŞLANGIÇ" },
-    { minLevel: 6, maxLevel: 10, bgTop: "#03040a", bgBot: "#0a0c20", ringHue: 235, bannerText: "BÖLGE 2: DERİN UZAY" },
-    { minLevel: 11, maxLevel: 15, bgTop: "#140404", bgBot: "#260808", ringHue: 15, bannerText: "BÖLGE 3: VOLKANİK ENERJİ" },
-    { minLevel: 16, maxLevel: 20, bgTop: "#04101a", bgBot: "#0a2233", ringHue: 180, bannerText: "BÖLGE 4: BUZUL KRİSTALLERİ" },
-    { minLevel: 21, maxLevel: 25, bgTop: "#0f041a", bgBot: "#210938", ringHue: 290, bannerText: "BÖLGE 5: KOZMİK NEBULA" },
-    { minLevel: 26, maxLevel: 9999, bgTop: "#141103", bgBot: "#2e2708", ringHue: 45, bannerText: "BÖLGE 6: USTALIK ÇEMBERİ" }
-];
-
-function resolveActiveTheme(level, score, mode) {
-    if (Storage.data.selectedTheme && Storage.data.selectedTheme !== "auto") {
-        const custom = ShopItems.themes.find(t => t.id === Storage.data.selectedTheme);
-        if (custom) return custom;
-    }
-    if (mode === "endless") {
-        if (score < 15) return LevelThemes[0];
-        if (score < 35) return LevelThemes[1];
-        if (score < 60) return LevelThemes[2];
-        if (score < 90) return LevelThemes[3];
-        if (score < 130) return LevelThemes[4];
-        return LevelThemes[5];
-    }
-    const targetLvl = level || 1;
-    for (let t of LevelThemes) {
-        if (targetLvl >= t.minLevel && targetLvl <= t.maxLevel) return t;
-    }
-    return LevelThemes[LevelThemes.length - 1];
-}
+/* =========================================================
+SFERIS: HALKA YOLCULUĞU
+Geliştirilmiş sürüm
+========================================================= */
 
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-let W = window.innerWidth, H = window.innerHeight;
 
-function resize() {
-    W = window.innerWidth; H = window.innerHeight;
-    canvas.width = W; canvas.height = H;
-    if (Ball.x > W) Ball.x = W / 2;
-    if (Ball.y > H) Ball.y = H * 0.22;
+let W=innerWidth,H=innerHeight,DPR=1;
+
+function resize(){
+DPR=Math.min(devicePixelRatio||1,2);
+W=innerWidth;
+H=innerHeight;
+canvas.width=W*DPR;
+canvas.height=H*DPR;
+canvas.style.width=W+"px";
+canvas.style.height=H+"px";
+ctx.setTransform(DPR,0,0,DPR,0,0);
 }
-window.addEventListener("resize", resize);
+addEventListener("resize",resize);
 resize();
 
-const BackgroundEngine = {
-    currentTheme: null, particles: [],
-    init(theme) { this.currentTheme = theme; this.reseed(); },
-    setTheme(newTheme, showBanner = true) {
-        if (this.currentTheme && this.currentTheme.bgTop === newTheme.bgTop) return;
-        this.currentTheme = newTheme; this.reseed();
-        if (showBanner && newTheme.bannerText && Game.active) UI.showThemeBanner(newTheme.bannerText);
-    },
-    reseed() {
-        this.particles = [];
-        for (let i = 0; i < 40; i++) {
-            this.particles.push({
-                x: Math.random() * W, y: Math.random() * H,
-                radius: Math.random() * 2 + 0.8,
-                vx: (Math.random() - 0.5) * 0.3,
-                vy: -(Math.random() * 0.4 + 0.1),
-                alpha: Math.random() * 0.5 + 0.2
-            });
-        }
-    },
-    updateAndDraw(ctx) {
-        if (!this.currentTheme) return;
-        const grad = ctx.createLinearGradient(0, 0, 0, H);
-        grad.addColorStop(0, this.currentTheme.bgTop);
-        grad.addColorStop(1, this.currentTheme.bgBot);
-        ctx.fillStyle = grad; ctx.fillRect(0, 0, W, H);
+/* =========================================================
+VERİLER
+========================================================= */
 
-        ctx.save();
-        for (let p of this.particles) {
-            p.x += p.vx; p.y += p.vy;
-            if (p.y < 0) { p.y = H; p.x = Math.random() * W; }
-            if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
-            ctx.globalAlpha = p.alpha;
-            ctx.fillStyle = "#ffffff";
-            ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill();
-        }
-        ctx.restore();
-    }
+const SAVE_VERSION=8;
+const SAVE_KEY="sferis_game_save_v8";
+
+const DEFAULT_TASKS=[
+{id:1,type:"rings",title:"Halka Avcısı",desc:"20 halka geç",target:20,reward:8},
+{id:2,type:"comboHits",title:"Seri Başlangıç",desc:"3x combo'yu 3 kez yap",target:3,reward:12},
+{id:3,type:"levelComplete",title:"İlk Adımlar",desc:"2 bölüm tamamla",target:2,reward:15},
+{id:4,type:"coin",title:"Coin Toplayıcı",desc:"5 coin topla",target:5,reward:8},
+{id:5,type:"endless",title:"Sonsuzluk",desc:"Serbest modda 10 skora ulaş",target:10,reward:12},
+{id:6,type:"comboMax",title:"Ateşleniyor",desc:"5x combo'ya ulaş",target:5,reward:15},
+{id:7,type:"rings",title:"Halka Ustası",desc:"50 halka geç",target:50,reward:18},
+{id:8,type:"coin",title:"Cüzdan Doluyor",desc:"15 coin topla",target:15,reward:20},
+{id:9,type:"levelComplete",title:"İlerleme",desc:"5 bölüm tamamla",target:5,reward:25},
+{id:10,type:"endless",title:"Dayanıklılık",desc:"Serbest modda 25 skora ulaş",target:25,reward:25},
+{id:11,type:"comboHits",title:"Combo Makinesi",desc:"3x combo'yu 6 kez yap",target:6,reward:25},
+{id:12,type:"shop",title:"İlk Alışveriş",desc:"1 mağaza ürünü aç",target:1,reward:10},
+{id:13,type:"shop",title:"Mağaza Gezgini",desc:"3 mağaza ürünü aç",target:3,reward:25},
+{id:14,type:"rings",title:"Yüzlük",desc:"100 halka geç",target:100,reward:35},
+{id:15,type:"coin",title:"Coin Mıknatısı",desc:"30 coin topla",target:30,reward:35},
+{id:16,type:"comboMax",title:"Ateş Duvarı",desc:"8x combo'ya ulaş",target:8,reward:30},
+{id:17,type:"endless",title:"Maratoncu",desc:"Serbest modda 40 skora ulaş",target:40,reward:40},
+{id:18,type:"levelReach",title:"Usta Adayı",desc:"10. seviyeye ulaş",target:10,reward:35},
+{id:19,type:"levelComplete",title:"Bölüm Canavarı",desc:"10 bölüm tamamla",target:10,reward:45},
+{id:20,type:"rings",title:"Halka Efsanesi",desc:"200 halka geç",target:200,reward:60},
+{id:21,type:"comboHits",title:"Combo Bağımlısı",desc:"3x combo'yu 10 kez yap",target:10,reward:50},
+{id:22,type:"coin",title:"Coin Hazinesi",desc:"50 coin topla",target:50,reward:55},
+{id:23,type:"endless",title:"Sonsuz Savaşçı",desc:"Serbest modda 60 skora ulaş",target:60,reward:65},
+{id:24,type:"levelReach",title:"Zirve Yolcusu",desc:"20. seviyeye ulaş",target:20,reward:60}
+];
+
+const ACHIEVEMENTS=[
+{id:"ring1",icon:"⭕",title:"İlk Halka",desc:"İlk halkayı geç",type:"rings",target:1,reward:5,rank:"Bronz"},
+{id:"ring50",icon:"🎯",title:"Halka Avcısı",desc:"50 halka geç",type:"rings",target:50,reward:12,rank:"Bronz"},
+{id:"ring200",icon:"💫",title:"Halka Ustası",desc:"200 halka geç",type:"rings",target:200,reward:25,rank:"Gümüş"},
+{id:"ring500",icon:"🌟",title:"Halka Efsanesi",desc:"500 halka geç",type:"rings",target:500,reward:50,rank:"Altın"},
+{id:"level3",icon:"🚀",title:"Yükseliş",desc:"3. seviyeye ulaş",type:"level",target:3,reward:8,rank:"Bronz"},
+{id:"level5",icon:"🏅",title:"Bronz Pilot",desc:"5. seviyeye ulaş",type:"level",target:5,reward:12,rank:"Bronz",bonus:"steady"},
+{id:"level10",icon:"🥈",title:"Gümüş Pilot",desc:"10. seviyeye ulaş",type:"level",target:10,reward:20,rank:"Gümüş",bonus:"aurora"},
+{id:"level20",icon:"🥇",title:"Altın Pilot",desc:"20. seviyeye ulaş",type:"level",target:20,reward:35,rank:"Altın",bonus:"cosmic"},
+{id:"level28",icon:"👑",title:"Sferis Şampiyonu",desc:"28. seviyeye ulaş",type:"level",target:28,reward:60,rank:"Efsanevi",bonus:"champion"},
+{id:"combo3",icon:"🔥",title:"Ateş Kıvılcımı",desc:"3x combo yap",type:"combo",target:3,reward:8,rank:"Bronz"},
+{id:"combo5",icon:"🔥",title:"Ateş Topu",desc:"5x combo yap",type:"combo",target:5,reward:12,rank:"Gümüş"},
+{id:"combo10",icon:"⚡",title:"Combo Canavarı",desc:"10x combo yap",type:"combo",target:10,reward:30,rank:"Altın",bonus:"lightning"},
+{id:"coins25",icon:"🪙",title:"Coin Avcısı",desc:"25 coin topla",type:"coins",target:25,reward:10,rank:"Bronz"},
+{id:"coins100",icon:"💰",title:"Coin Zengini",desc:"100 coin topla",type:"coins",target:100,reward:35,rank:"Altın",bonus:"solar"},
+{id:"endless25",icon:"♾️",title:"Sonsuz Yolcu",desc:"Serbest modda 25 skor yap",type:"endless",target:25,reward:15,rank:"Gümüş"},
+{id:"endless50",icon:"🌌",title:"Sonsuz Usta",desc:"Serbest modda 50 skor yap",type:"endless",target:50,reward:40,rank:"Altın"},
+{id:"tasks5",icon:"📋",title:"Görev Adamı",desc:"5 görev tamamla",type:"tasks",target:5,reward:15,rank:"Bronz"},
+{id:"tasks15",icon:"📚",title:"Görev Ustası",desc:"15 görev tamamla",type:"tasks",target:15,reward:35,rank:"Gümüş"},
+{id:"shop5",icon:"🛍️",title:"Koleksiyoncu",desc:"5 mağaza ürünü aç",type:"shop",target:5,reward:15,rank:"Bronz"},
+{id:"shop15",icon:"💎",title:"Vitrin Sahibi",desc:"15 mağaza ürünü aç",type:"shop",target:15,reward:35,rank:"Altın"}
+];
+
+const DEFAULT_STATS={
+totalRings:0,
+totalCoins:0,
+bestCombo:0,
+levelsCompleted:0,
+endlessBest:0,
+tasksCompleted:0,
+shopPurchases:0,
+xp:0,
+playerLevel:1,
+modesPlayed:0,
+bossWins:0,
+powerUses:0,
+gamesPlayed:0
 };
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   5. FX MOTORU
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-class ParticleEngine {
-    constructor() { this.particles = []; this.trailPoints = []; }
-    emit(x, y, color, count = 8, speed = 2.5) {
-        for (let i = 0; i < count; i++) {
-            const angle = Math.random() * Math.PI * 2;
-            const spd = (Math.random() * 0.7 + 0.3) * speed;
-            this.particles.push({ x, y, vx: Math.cos(angle) * spd, vy: Math.sin(angle) * spd, radius: Math.random() * 2 + 1, color, alpha: 0.8, decay: 0.025 });
-        }
-    }
-    addTrail(x, y, color) { this.trailPoints.push({ x, y, color, alpha: 0.4 }); }
-    updateAndDraw(ctx) {
-        for (let i = this.trailPoints.length - 1; i >= 0; i--) {
-            const t = this.trailPoints[i]; t.alpha -= 0.03;
-            if (t.alpha <= 0) { this.trailPoints.splice(i, 1); continue; }
-            ctx.fillStyle = t.color; ctx.globalAlpha = t.alpha;
-            ctx.beginPath(); ctx.arc(t.x, t.y, 3.5 * t.alpha, 0, Math.PI * 2); ctx.fill();
-        }
-        for (let i = this.particles.length - 1; i >= 0; i--) {
-            const p = this.particles[i]; p.x += p.vx; p.y += p.vy; p.alpha -= p.decay;
-            if (p.alpha <= 0) { this.particles.splice(i, 1); continue; }
-            ctx.globalAlpha = p.alpha; ctx.fillStyle = p.color;
-            ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill();
-        }
-        ctx.globalAlpha = 1;
-    }
+const ShopItems={
+balls:[
+{id:"cyan",name:"Cyan",icon:"🔵",color:"#27eaff",price:0,rarity:"normal"},
+{id:"amber",name:"Amber",icon:"🟠",color:"#ffb72e",price:70,rarity:"normal"},
+{id:"ruby",name:"Ruby",icon:"🔴",color:"#ff3d68",price:110,rarity:"rare"},
+{id:"emerald",name:"Emerald",icon:"🟢",color:"#35f08c",price:140,rarity:"rare"},
+{id:"violet",name:"Violet",icon:"🟣",color:"#b15cff",price:180,rarity:"rare"},
+{id:"ice",name:"Ice",icon:"🔹",color:"#91eaff",price:230,rarity:"epic"},
+{id:"solar",name:"Solar",icon:"☀️",color:"#ffd34e",price:300,rarity:"epic"},
+{id:"shadow",name:"Shadow",icon:"⚫",color:"#8d72ff",price:380,rarity:"legendary"}
+],
+trails:[
+{id:"dots",name:"Nokta",icon:"•",color:"#fff",price:0,rarity:"normal",type:"dots"},
+{id:"glow",name:"Glow",icon:"✨",color:"#55eaff",price:80,rarity:"normal",type:"glow"},
+{id:"plasma",name:"Plasma",icon:"⚡",color:"#bd66ff",price:140,rarity:"rare",type:"plasma"},
+{id:"comet",name:"Kuyruklu Yıldız",icon:"☄️",color:"#fff",price:180,rarity:"rare",type:"comet"},
+{id:"rainbow",name:"Rainbow",icon:"🌈",color:"#fff",price:240,rarity:"epic",type:"rainbow"},
+{id:"lightning",name:"Lightning",icon:"⚡",color:"#baf8ff",price:300,rarity:"epic",type:"lightning"},
+{id:"fire",name:"Fire",icon:"🔥",color:"#ff7048",price:360,rarity:"legendary",type:"fire"}
+],
+themes:[
+{id:"auto",name:"Gece",icon:"🌙",price:0,rarity:"normal"},
+{id:"nebula",name:"Nebula",icon:"🌌",price:100,rarity:"normal"},
+{id:"sunset",name:"Gün Batımı",icon:"🌅",price:150,rarity:"rare"},
+{id:"matrix",name:"Matrix",icon:"🟩",price:180,rarity:"rare"},
+{id:"aurora",name:"Aurora",icon:"🌈",price:250,rarity:"epic"},
+{id:"ocean",name:"Ocean",icon:"🌊",price:280,rarity:"epic"},
+{id:"crimson",name:"Crimson",icon:"🩸",price:350,rarity:"legendary"}
+],
+badges:[
+{id:"novice",name:"Acemi",icon:"🔰",price:0,rarity:"normal"},
+{id:"steady",name:"Dengeli",icon:"🛡️",price:100,rarity:"normal"},
+{id:"master",name:"Usta",icon:"🏆",price:200,rarity:"rare"},
+{id:"collector",name:"Koleksiyoncu",icon:"💎",price:250,rarity:"rare"},
+{id:"speedster",name:"Hız Ustası",icon:"⚡",price:300,rarity:"epic"},
+{id:"combo",name:"Combo Kralı",icon:"🔥",price:350,rarity:"epic"},
+{id:"cosmic",name:"Kozmik",icon:"🌌",price:450,rarity:"legendary"},
+{id:"champion",name:"Şampiyon",icon:"👑",price:600,rarity:"legendary"}
+]
+};
+
+const RARITY={
+normal:"Normal",
+rare:"Nadir",
+epic:"Destansı",
+legendary:"Efsanevi"
+};
+
+const Themes={
+auto:["#050816","#071022"],
+nebula:["#160d31","#051b35"],
+sunset:["#35130e","#160b1d"],
+matrix:["#021207","#001a11"],
+aurora:["#061a24","#130c2d"],
+ocean:["#031a2b","#032f40"],
+crimson:["#26050c","#13020a"]
+};
+
+/* =========================================================
+STORAGE
+========================================================= */
+
+const Storage={
+data:{
+version:SAVE_VERSION,
+coins:15,
+currentLevel:1,
+maxUnlockedLevel:1,
+endlessHighScore:0,
+
+selectedBall:"cyan",
+selectedTrail:"dots",
+selectedTheme:"auto",
+selectedBadge:"novice",
+
+unlockedItems:["cyan","dots","auto","novice"],
+
+settings:{
+sfx:true,
+bgm:true,
+vibration:true
+},
+
+tasks:DEFAULT_TASKS.map(x=>({...x,current:0,done:false})),
+achievements:{},
+stats:{...DEFAULT_STATS},
+
+daily:{
+date:"",
+tasks:[],
+shop:[]
 }
-const fx = new ParticleEngine();
+},
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   6. OYUN NESNELERİ
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-const Ball = {
-    x: 0, y: 0, radius: 13, vx: 0, friction: 0.89, maxSpeed: 15,
-    reset() { 
-        this.x = W / 2; 
-        this.y = Math.min(H * 0.22, H - 50); 
-        this.vx = 0; 
-    },
-    update() {
-        this.x += this.vx; this.vx *= this.friction;
-        if (Math.abs(this.vx) < 0.01) this.vx = 0;
-        
-        if (isNaN(this.x) || this.x < this.radius) { this.x = this.radius; this.vx = 0; }
-        if (this.x > W - this.radius) { this.x = W - this.radius; this.vx = 0; }
-        if (isNaN(this.y)) { this.y = H * 0.22; }
+load(){
+try{
+const raw=localStorage.getItem(SAVE_KEY);
+let old=null;
 
-        if (Game.active && Math.abs(this.vx) > 0.4) {
-            const ballSkin = ShopItems.balls.find(b => b.id === Storage.data.selectedBall) || ShopItems.balls[0];
-            fx.addTrail(this.x, this.y, ballSkin.color);
-        }
-    },
-    draw(ctx) {
-        const ballSkin = ShopItems.balls.find(b => b.id === Storage.data.selectedBall) || ShopItems.balls[0];
-        ctx.save();
-        ctx.fillStyle = ballSkin.color;
-        ctx.beginPath(); ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2); ctx.fill();
-        ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
-        ctx.beginPath(); ctx.arc(this.x - 3, this.y - 3, this.radius * 0.35, 0, Math.PI * 2); ctx.fill();
-        ctx.restore();
-    }
-};
+if(raw) old=JSON.parse(raw);
 
-class Ring {
-    constructor(speed, gapSize, moving = false, hue = 195) {
-        this.y = H + 30; this.thickness = 20; this.speed = speed; this.gapSize = gapSize;
-        this.gapX = Math.random() * Math.max(10, (W - this.gapSize - 40)) + 20;
-        this.passed = false;
-        this.isPortal = Math.random() < 0.12;
-        this.color = this.isPortal ? "#9d4edd" : `hsl(${(hue + Math.random() * 20) % 360}, 85%, 55%)`;
-        this.moving = moving; this.moveDir = Math.random() > 0.5 ? 1 : -1; this.moveSpeed = 1.3;
-        this.hasCoin = !this.isPortal && Math.random() < 0.25; this.coinCollected = false;
-    }
-    update() {
-        this.y -= this.speed;
-        if (this.moving) {
-            this.gapX += this.moveSpeed * this.moveDir;
-            if (this.gapX <= 15 || this.gapX + this.gapSize >= W - 15) this.moveDir *= -1;
-        }
-    }
-    draw(ctx) {
-        ctx.save();
-        ctx.fillStyle = this.color;
-        ctx.fillRect(0, this.y, Math.max(0, this.gapX), this.thickness);
-        ctx.fillRect(this.gapX + this.gapSize, this.y, Math.max(0, W - (this.gapX + this.gapSize)), this.thickness);
-
-        ctx.fillStyle = this.isPortal ? "#ffd700" : "#ffffff";
-        ctx.beginPath();
-        ctx.arc(this.gapX, this.y + this.thickness / 2, 4, 0, Math.PI * 2);
-        ctx.arc(this.gapX + this.gapSize, this.y + this.thickness / 2, 4, 0, Math.PI * 2);
-        ctx.fill();
-
-        if (this.hasCoin && !this.coinCollected) {
-            const cx = this.gapX + this.gapSize / 2, cy = this.y + this.thickness / 2;
-            ctx.fillStyle = "#ffd700";
-            ctx.beginPath(); ctx.arc(cx, cy, 6, 0, Math.PI * 2); ctx.fill();
-        }
-        ctx.restore();
-    }
+if(old){
+this.data={
+...this.data,
+...old,
+settings:{
+...this.data.settings,
+...(old.settings||{})
+},
+stats:{
+...DEFAULT_STATS,
+...(old.stats||{})
+},
+daily:{
+...this.data.daily,
+...(old.daily||{})
 }
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   7. OYUN MOTORU & YÖNETİMİ
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-const Game = {
-    active: false, mode: "level", level: 1, score: 0, targetScore: 15, coinsEarned: 0, combo: 0, lives: 1, rings: [], spawnTimer: 0,
-
-    startLevel(lvl) {
-        Sound.init(); Sound.btn(); Sound.startBGM();
-        this.mode = "level"; this.level = lvl; this.score = 0; this.coinsEarned = 0; this.combo = 0;
-        this.lives = 1 + (Storage.data.upgrades.extraShieldLevel || 0);
-        this.targetScore = 15 + (lvl - 1) * 4; this.rings = []; this.spawnTimer = 0; this.active = true;
-
-        BackgroundEngine.setTheme(resolveActiveTheme(this.level, this.score, this.mode), true);
-        Ball.reset(); UI.showHUD(true); UI.updateHUD(); UI.showScreen(null);
-    },
-
-    startEndless() {
-        Sound.init(); Sound.btn(); Sound.startBGM();
-        this.mode = "endless"; this.score = 0; this.coinsEarned = 0; this.combo = 0;
-        this.lives = 1 + (Storage.data.upgrades.extraShieldLevel || 0);
-        this.rings = []; this.spawnTimer = 0; this.active = true;
-
-        BackgroundEngine.setTheme(resolveActiveTheme(1, 0, this.mode), false);
-        Ball.reset(); UI.showHUD(true); UI.updateHUD(); UI.showScreen(null);
-    },
-
-    retry() { if (this.mode === "level") this.startLevel(this.level); else this.startEndless(); },
-
-    nextLevel() {
-        const nextLvl = this.level + 1;
-        if (nextLvl > Storage.data.maxUnlockedLevel) Storage.data.maxUnlockedLevel = nextLvl;
-        Storage.data.currentLevel = nextLvl; Storage.save();
-        this.startLevel(nextLvl);
-    },
-
-    onRingPass(r) {
-        this.score++; this.combo++; Sound.pass(); Haptic.light();
-        fx.emit(Ball.x, Ball.y, r.isPortal ? "#9d4edd" : "#00f0ff", 6);
-
-        if (r.isPortal) { Storage.data.coins += 5; }
-
-        this.updateTaskProgress(1);
-        this.updateAchievementProgress(1);
-        if (this.mode === "endless") {
-            this.updateAchievementProgress(this.score);
-            BackgroundEngine.setTheme(resolveActiveTheme(1, this.score, this.mode), true);
-        }
-
-        if (this.combo >= 2) {
-            UI.showCombo(this.combo);
-            if (this.combo % 3 === 0) { Sound.combo(); Haptic.medium(); }
-        }
-
-        if (this.mode === "level" && this.score >= this.targetScore) this.victory();
-        UI.updateHUD();
-    },
-
-    onCoinCollect(r) {
-        r.coinCollected = true;
-        const multiplier = Storage.data.inventory.multiplier || 1;
-        const bonusLvl = Storage.data.upgrades.coinBonusLevel || 0;
-        const earned = Math.floor((1 + bonusLvl * 0.4) * multiplier);
-        this.coinsEarned += earned; Storage.data.coins += earned; Storage.save();
-        Sound.coin(); Haptic.light(); fx.emit(Ball.x, Ball.y, "#ffd700", 10);
-        UI.updateHUD();
-    },
-
-    onHit() {
-        if (Storage.data.inventory.shield > 0) {
-            Storage.data.inventory.shield--; Storage.save();
-            Sound.hit(); Haptic.medium(); fx.emit(Ball.x, Ball.y, "#00f0ff", 20);
-            return;
-        }
-
-        this.lives--; this.combo = 0; UI.hideCombo(); Sound.hit(); Haptic.heavy();
-        fx.emit(Ball.x, Ball.y, "#ff0055", 16);
-
-        if (this.lives <= 0) {
-            if (Storage.data.inventory.revive > 0) {
-                Storage.data.inventory.revive--; Storage.save();
-                this.lives = 1; Sound.victory(); fx.emit(Ball.x, Ball.y, "#ffd700", 25);
-                UI.updateHUD(); return;
-            }
-            this.gameOver();
-        } else { UI.updateHUD(); }
-    },
-
-    updateTaskProgress(amt) {
-        Storage.data.tasks.forEach(t => {
-            if (!t.done) {
-                t.current += amt;
-                if (t.current >= t.target) { t.done = true; Storage.data.coins += t.reward; }
-            }
-        });
-        Storage.save();
-    },
-
-    updateAchievementProgress(val) {
-        Storage.data.achievements.forEach(a => {
-            if (!a.claimed) {
-                a.current = Math.max(a.current, val);
-            }
-        });
-        Storage.save();
-    },
-
-    victory() {
-        this.active = false;
-        const multiplier = Storage.data.inventory.multiplier || 1;
-        const reward = (4 + Math.floor(this.level * 0.6)) * multiplier;
-        Storage.data.coins += reward;
-        if (this.level >= Storage.data.maxUnlockedLevel) Storage.data.maxUnlockedLevel = this.level + 1;
-        Storage.save();
-
-        Sound.victory();
-        document.getElementById("vic-score").innerText = this.score;
-        document.getElementById("vic-coins").innerText = reward + this.coinsEarned;
-        UI.showHUD(false); UI.showScreen("victory-screen");
-    },
-
-    gameOver() {
-        this.active = false;
-        let isRecord = false;
-        if (this.mode === "endless" && this.score > Storage.data.endlessHighScore) {
-            Storage.data.endlessHighScore = this.score; isRecord = true;
-        }
-        Storage.save();
-
-        document.getElementById("gov-score").innerText = this.score;
-        document.getElementById("gov-best").innerText = this.mode === "endless" ? Storage.data.endlessHighScore : "-";
-        document.getElementById("gov-sub").innerText = isRecord ? "🎉 YENİ SERBEST REKORU!" : "Odaklan ve tekrar dene.";
-        UI.showHUD(false); UI.showScreen("gameover-screen");
-    }
 };
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   8. GÜVENLİ KONTROL (GLOBAL FULL-SCREEN TOUCH)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-let lastTouchX = 0; let isDragging = false;
-
-window.addEventListener("touchstart", (e) => {
-    if (!Game.active) return;
-    isDragging = true;
-    lastTouchX = e.touches[0].clientX;
-}, { passive: true });
-
-window.addEventListener("touchmove", (e) => {
-    if (!isDragging || !Game.active) return;
-    const clientX = e.touches[0].clientX;
-    const deltaX = clientX - lastTouchX;
-    const magBonus = 1 + (Storage.data.upgrades.magnetLevel || 0) * 0.08;
-    Ball.vx += deltaX * 0.85 * 0.2 * magBonus;
-    if (Ball.vx > Ball.maxSpeed) Ball.vx = Ball.maxSpeed;
-    if (Ball.vx < -Ball.maxSpeed) Ball.vx = -Ball.maxSpeed;
-    lastTouchX = clientX;
-}, { passive: true });
-
-window.addEventListener("touchend", () => { isDragging = false; });
-
-window.addEventListener("mousedown", (e) => {
-    if (!Game.active) return;
-    isDragging = true;
-    lastTouchX = e.clientX;
+const oldTasks=Array.isArray(old.tasks)?old.tasks:[];
+this.data.tasks=DEFAULT_TASKS.map(def=>{
+const saved=oldTasks.find(t=>t.id===def.id);
+return {
+...def,
+...(saved||{}),
+current:Number(saved?.current||0),
+done:Boolean(saved?.done)
+};
 });
 
-window.addEventListener("mousemove", (e) => {
-    if (!isDragging || !Game.active) return;
-    const deltaX = e.clientX - lastTouchX;
-    const magBonus = 1 + (Storage.data.upgrades.magnetLevel || 0) * 0.08;
-    Ball.vx += deltaX * 0.85 * 0.2 * magBonus;
-    if (Ball.vx > Ball.maxSpeed) Ball.vx = Ball.maxSpeed;
-    if (Ball.vx < -Ball.maxSpeed) Ball.vx = -Ball.maxSpeed;
-    lastTouchX = e.clientX;
-});
-
-window.addEventListener("mouseup", () => { isDragging = false; });
-
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   9. ANA DÖNGÜ
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-function mainLoop() {
-    BackgroundEngine.updateAndDraw(ctx);
-
-    if (Game.active) {
-        Ball.update();
-        const curTheme = BackgroundEngine.currentTheme || LevelThemes[0];
-        const rawDiff = Game.mode === "level" ? Game.level : Math.min(25, Math.floor(Game.score / 6) + 1);
-        const diffFactor = Math.max(1, rawDiff * 0.75);
-        
-        const baseSpeed = 3.2 + diffFactor * 0.12;
-        const gapSize = Math.max(W * 0.23, (W * 0.38) - (diffFactor * 2.0));
-        const spawnInterval = Math.max(40, 70 - diffFactor * 1.2);
-
-        Game.spawnTimer++;
-        if (Game.spawnTimer >= spawnInterval) {
-            const isMoving = diffFactor >= 4 && Math.random() < 0.32;
-            Game.rings.push(new Ring(baseSpeed, gapSize, isMoving, curTheme.ringHue));
-            Game.spawnTimer = 0;
-        }
-
-        for (let i = Game.rings.length - 1; i >= 0; i--) {
-            const r = Game.rings[i]; r.update(); r.draw(ctx);
-
-            const inVertical = (Ball.y + Ball.radius > r.y) && (Ball.y - Ball.radius < r.y + r.thickness);
-            if (inVertical) {
-                const inGap = (Ball.x - Ball.radius > r.gapX) && (Ball.x + Ball.radius < r.gapX + r.gapSize);
-                if (!inGap) {
-                    Game.onHit(); Game.rings.splice(i, 1); continue;
-                } else if (r.hasCoin && !r.coinCollected) {
-                    const coinX = r.gapX + r.gapSize / 2;
-                    if (Math.abs(Ball.x - coinX) < 18) Game.onCoinCollect(r);
-                }
-            }
-
-            if (!r.passed && Ball.y > r.y + r.thickness) { r.passed = true; Game.onRingPass(r); }
-            if (r.y < -50) Game.rings.splice(i, 1);
-        }
-        Ball.draw(ctx);
-    }
-
-    fx.updateAndDraw(ctx);
-    requestAnimationFrame(mainLoop);
+this.data.unlockedItems=Array.isArray(old.unlockedItems)
+? [...new Set([...this.data.unlockedItems,...old.unlockedItems])]
+: this.data.unlockedItems;
 }
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   10. GÜNLÜK ŞANS ÇARKI
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-const SpinWheel = {
-    open() {
-        Sound.btn(); UI.showScreen('spin-menu');
-        const today = new Date().toDateString();
-        const btn = document.getElementById("spin-btn");
-        const txt = document.getElementById("spin-result-text");
-        if (Storage.data.lastSpinDate === today) {
-            btn.style.opacity = "0.4"; btn.style.pointerEvents = "none";
-            txt.innerText = "Bugünkü hakkını kullandın! Yarın tekrar gel.";
-        } else {
-            btn.style.opacity = "1"; btn.style.pointerEvents = "auto";
-            txt.innerText = "Her gün 1 kez ücretsiz çevir ve sürpriz ödülü kap!";
-        }
-    },
-    spin() {
-        const today = new Date().toDateString();
-        if (Storage.data.lastSpinDate === today) return;
-        Storage.data.lastSpinDate = today;
-        const rewards = [
-            { type: "coins", val: 30, desc: "🎉 30 Altın Kazandın!" },
-            { type: "coins", val: 70, desc: "🌟 70 Büyük Altın Kazandın!" },
-            { type: "shield", val: 1, desc: "🛡️ 1 Koruma Kalkanı Kazandın!" },
-            { type: "revive", val: 1, desc: "❤️ 1 Ekstra Can Kazandın!" }
-        ];
-        const prize = rewards[Math.floor(Math.random() * rewards.length)];
-        if (prize.type === "coins") Storage.data.coins += prize.val;
-        else Storage.data.inventory[prize.type]++;
-        Storage.save(); Sound.victory(); Haptic.medium();
-        document.getElementById("spin-result-text").innerText = prize.desc;
-        document.getElementById("spin-btn").style.opacity = "0.4";
-        document.getElementById("spin-btn").style.pointerEvents = "none";
-        UI.updateMenuData();
-    }
+this.data.maxUnlockedLevel=Math.max(
+1,
+Number(this.data.maxUnlockedLevel||1)
+);
+
+this.data.stats.endlessBest=Math.max(
+this.data.stats.endlessBest||0,
+this.data.endlessHighScore||0
+);
+
+this.data.stats.playerLevel=Math.max(
+1,
+Number(this.data.stats.playerLevel||1)
+);
+
+this.migrateOldSave();
+this.save();
+
+}catch(e){
+console.warn("Kayıt okunamadı:",e);
+}
+},
+
+migrateOldSave(){
+/* Önceki sürümlerde bulunan itemleri koru */
+if(!this.data.unlockedItems.includes("cyan"))
+this.data.unlockedItems.push("cyan");
+
+if(!this.data.unlockedItems.includes("dots"))
+this.data.unlockedItems.push("dots");
+
+if(!this.data.unlockedItems.includes("auto"))
+this.data.unlockedItems.push("auto");
+
+if(!this.data.unlockedItems.includes("novice"))
+this.data.unlockedItems.push("novice");
+
+if(this.data.maxUnlockedLevel>28)
+this.data.maxUnlockedLevel=28;
+},
+
+save(){
+try{
+localStorage.setItem(SAVE_KEY,JSON.stringify(this.data));
+}catch(e){
+console.warn("Kayıt yazılamadı:",e);
+}
+},
+
+reset(){
+if(!confirm("Tüm ilerleme silinsin mi?"))
+return;
+
+localStorage.removeItem(SAVE_KEY);
+location.reload();
+}
 };
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   11. UI VE YÖNETİM
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-let currentShopTab = "balls";
+/* =========================================================
+SES
+========================================================= */
 
-const UI = {
-    showScreen(id) {
-        Sound.btn(); document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
-        if (id) { document.getElementById(id).classList.add("active"); this.updateMenuData(); }
-    },
-    showHUD(visible) { document.getElementById("hud-layer").style.display = visible ? "block" : "none"; },
-    showThemeBanner(text) {
-        const b = document.getElementById("theme-banner");
-        b.innerText = text; b.classList.add("show");
-        setTimeout(() => b.classList.remove("show"), 2000);
-    },
-    updateHUD() {
-        document.getElementById("hud-score").innerText = Game.score;
-        document.getElementById("hud-mode-title").innerText = Game.mode === "level" ? `LEVEL ${Game.level}` : "SERBEST";
-        document.getElementById("hud-coins").innerText = Storage.data.coins;
-        let heartStr = "❤️".repeat(Math.max(0, Game.lives));
-        if (Storage.data.inventory.shield > 0) heartStr += " 🛡️";
-        if (Storage.data.inventory.revive > 0) heartStr += " ➕";
-        document.getElementById("hud-hearts").innerText = heartStr;
-        const progressWrap = document.getElementById("hud-progress-wrap");
-        if (Game.mode === "level") {
-            progressWrap.style.display = "block";
-            document.getElementById("hud-progress").style.width = `${Math.min(100, (Game.score / Game.targetScore) * 100)}%`;
-        } else { progressWrap.style.display = "none"; }
-    },
-    showCombo(combo) { const tag = document.getElementById("hud-combo"); tag.innerText = `COMBO x${combo}`; tag.classList.add("active"); },
-    hideCombo() { document.getElementById("hud-combo").classList.remove("active"); },
-    updateMenuData() {
-        document.getElementById("menu-coins").innerText = Storage.data.coins;
-        document.getElementById("shop-coins").innerText = Storage.data.coins;
-        document.getElementById("upgrade-coins").innerText = Storage.data.coins;
-        document.getElementById("menu-endless-high").innerText = Storage.data.endlessHighScore;
-        document.getElementById("menu-level-indicator").innerText = Storage.data.maxUnlockedLevel;
-        this.renderLevelGrid(); this.renderShop(); this.renderUpgrades(); this.renderTasks(); this.renderAchievements();
-        Settings.syncToggles();
-    },
-    renderLevelGrid() {
-        const c = document.getElementById("level-grid-container"); let html = "";
-        for (let i = 1; i <= 28; i++) {
-            const isCompleted = i < Storage.data.maxUnlockedLevel;
-            const isCurrent = i === Storage.data.maxUnlockedLevel;
-            const isLocked = i > Storage.data.maxUnlockedLevel;
-            const cls = isCompleted ? "completed" : (isCurrent ? "current" : "locked");
-            const icon = isLocked ? "🔒" : (isCompleted ? "✓" : i);
-            html += `<div class="level-node ${cls}" onclick="${!isLocked ? `Game.startLevel(${i})` : ''}">${icon}</div>`;
-        }
-        c.innerHTML = html;
-    },
-    renderShop() {
-        const c = document.getElementById("shop-grid-container");
-        const items = ShopItems[currentShopTab] || [];
-        const selectedKey = currentShopTab === "balls" ? "selectedBall" : currentShopTab === "trails" ? "selectedTrail" : currentShopTab === "themes" ? "selectedTheme" : "selectedBadge";
-        c.innerHTML = items.map(item => {
-            if (currentShopTab === "powerups") {
-                const count = Storage.data.inventory[item.targetKey] || 0;
-                return `
-                    <div class="shop-card" onclick="Shop.buyPowerup('${item.targetKey}', ${item.price})">
-                        <div class="shop-preview">${item.icon}</div>
-                        <div class="shop-item-name">${item.name}</div>
-                        <div style="font-size: 9px; color: var(--text-dim);">${item.desc}</div>
-                        <div class="shop-item-status" style="color: var(--accent);">Sahip: ${count} | Al (${item.price} 🪙)</div>
-                    </div>
-                `;
-            }
-            const isUnlocked = Storage.data.unlockedItems.includes(item.id);
-            const isSelected = Storage.data[selectedKey] === item.id;
-            return `
-                <div class="shop-card ${isSelected ? 'selected' : ''}" onclick="Shop.selectItem('${currentShopTab}', '${item.id}')">
-                    <div class="shop-preview" style="${item.color ? `background:${item.color};` : ''}">${item.icon || ''}</div>
-                    <div class="shop-item-name">${item.name}</div>
-                    <div class="shop-item-status" style="${isSelected ? 'color:var(--primary);' : ''}">${isSelected ? 'SEÇİLİ' : (isUnlocked ? 'KULLAN' : item.price + ' 🪙')}</div>
-                </div>
-            `;
-        }).join("");
-    },
-    renderUpgrades() {
-        const c = document.getElementById("upgrades-container");
-        c.innerHTML = UpgradeItems.map(up => {
-            const currentLvl = Storage.data.upgrades[up.id] || 0;
-            const price = up.basePrice * (currentLvl + 1);
-            const isMax = currentLvl >= up.max;
-            return `
-                <div class="glass-panel list-row">
-                    <div>
-                        <div style="font-size: 13px; font-weight: 700;">${up.name} (Seviye ${currentLvl}/${up.max})</div>
-                        <div style="font-size: 11px; color: var(--text-dim);">${up.desc}</div>
-                    </div>
-                    <button class="btn-secondary" style="padding: 6px 12px; font-size: 11px; ${isMax ? 'opacity:0.4;' : ''}" onclick="Shop.buyUpgrade('${up.id}', ${price}, ${up.max})">
-                        ${isMax ? 'MAX' : `${price} 🪙`}
-                    </button>
-                </div>
-            `;
-        }).join("");
-    },
-    renderTasks() {
-        const c = document.getElementById("task-container");
-        c.innerHTML = Storage.data.tasks.map(t => `
-            <div class="glass-panel list-row">
-                <div>
-                    <div style="font-size: 12px; font-weight: 700;">${t.desc}</div>
-                    <div style="font-size: 10px; color: var(--text-dim);">${t.done ? 'Tamamlandı' : `${t.current}/${t.target}`}</div>
-                </div>
-                <div class="currency-badge" style="font-size: 11px; padding: 3px 8px;">${t.done ? '✅' : `+${t.reward} 🪙`}</div>
-            </div>
-        `).join("");
-    },
-    renderAchievements() {
-        const c = document.getElementById("achievement-container");
-        c.innerHTML = Storage.data.achievements.map(a => {
-            const isReady = a.current >= a.target && !a.claimed;
-            return `
-                <div class="glass-panel list-row">
-                    <div>
-                        <div style="font-size: 12px; font-weight: 700;">🏅 ${a.title}</div>
-                        <div style="font-size: 10px; color: var(--text-dim);">${a.desc} (${Math.min(a.current, a.target)}/${a.target})</div>
-                    </div>
-                    <button class="btn-secondary" style="padding: 6px 10px; font-size: 10px; ${a.claimed ? 'opacity:0.4;' : ''}" onclick="Shop.claimAchievement(${a.id})">
-                        ${a.claimed ? 'Alındı' : (isReady ? 'Ödülü Al' : 'Kilitli')}
-                    </button>
-                </div>
-            `;
-        }).join("");
-    }
+const Sound={
+ctx:null,
+
+init(){
+if(!Storage.data.settings.sfx && !Storage.data.settings.bgm)
+return;
+
+if(!this.ctx)
+this.ctx=new (window.AudioContext||window.webkitAudioContext)();
+
+if(this.ctx.state==="suspended")
+this.ctx.resume();
+},
+
+beep(freq=500,duration=.07,type="sine",volume=.035){
+if(!Storage.data.settings.sfx) return;
+
+this.init();
+if(!this.ctx) return;
+
+const osc=this.ctx.createOscillator();
+const gain=this.ctx.createGain();
+
+osc.type=type;
+osc.frequency.value=freq;
+gain.gain.value=volume;
+
+osc.connect(gain);
+gain.connect(this.ctx.destination);
+
+osc.start();
+gain.gain.exponentialRampToValueAtTime(.001,this.ctx.currentTime+duration);
+osc.stop(this.ctx.currentTime+duration);
+},
+
+ring(){
+this.beep(650,.055,"sine",.035);
+},
+
+coin(){
+this.beep(900,.06,"triangle",.045);
+setTimeout(()=>this.beep(1200,.08,"triangle",.035),50);
+},
+
+combo(){
+this.beep(700,.05,"square",.025);
+setTimeout(()=>this.beep(1100,.09,"square",.03),50);
+},
+
+power(){
+this.beep(300,.08,"sawtooth",.03);
+setTimeout(()=>this.beep(700,.15,"sine",.04),70);
+},
+
+boss(){
+this.beep(130,.15,"sawtooth",.04);
+setTimeout(()=>this.beep(220,.18,"sawtooth",.04),100);
+},
+
+victory(){
+[500,700,900,1200].forEach((f,i)=>{
+setTimeout(()=>this.beep(f,.13,"triangle",.045),i*90);
+});
+},
+
+error(){
+this.beep(110,.2,"sawtooth",.045);
+},
+
+btn(){
+this.beep(450,.035,"sine",.018);
+}
 };
 
-const Shop = {
-    setTab(tab, el) { currentShopTab = tab; document.querySelectorAll(".shop-tab").forEach(t => t.classList.remove("active")); el.classList.add("active"); UI.renderShop(); },
-    selectItem(category, id) {
-        const items = ShopItems[category]; const item = items.find(x => x.id === id); if (!item) return;
-        const selectedKey = category === "balls" ? "selectedBall" : category === "trails" ? "selectedTrail" : category === "themes" ? "selectedTheme" : "selectedBadge";
-        if (Storage.data.unlockedItems.includes(id)) {
-            Storage.data[selectedKey] = id; Sound.btn(); Haptic.light();
-            BackgroundEngine.setTheme(resolveActiveTheme(Storage.data.maxUnlockedLevel, 0, "level"), false);
-        } else if (Storage.data.coins >= item.price) {
-            Storage.data.coins -= item.price; Storage.data.unlockedItems.push(id); Storage.data[selectedKey] = id;
-            Sound.coin(); Haptic.medium();
-            BackgroundEngine.setTheme(resolveActiveTheme(Storage.data.maxUnlockedLevel, 0, "level"), false);
-        }
-        Storage.save(); UI.updateMenuData();
-    },
-    buyPowerup(targetKey, price) {
-        if (Storage.data.coins >= price) {
-            Storage.data.coins -= price; if (!Storage.data.inventory[targetKey]) Storage.data.inventory[targetKey] = 0;
-            Storage.data.inventory[targetKey]++; Storage.save(); Sound.coin(); Haptic.medium(); UI.updateMenuData();
-        } else { Sound.hit(); Haptic.light(); }
-    },
-    buyUpgrade(id, price, max) {
-        if ((Storage.data.upgrades[id] || 0) < max && Storage.data.coins >= price) {
-            Storage.data.coins -= price; Storage.data.upgrades[id] = (Storage.data.upgrades[id] || 0) + 1;
-            Storage.save(); Sound.coin(); Haptic.medium(); UI.updateMenuData();
-        } else { Sound.hit(); Haptic.light(); }
-    },
-    claimAchievement(id) {
-        const ach = Storage.data.achievements.find(a => a.id === id);
-        if (ach && ach.current >= ach.target && !ach.claimed) {
-            ach.claimed = true; Storage.data.coins += ach.reward; Storage.save();
-            Sound.victory(); Haptic.medium(); UI.updateMenuData();
-        }
-    }
-};
+/* =========================================================
+XP / OYUNCU SEVİYESİ
+========================================================= */
 
-const Settings = {
-    toggle(key) {
-        Storage.data.settings[key] = !Storage.data.settings[key];
-        Storage.save(); Sound.btn(); Haptic.light();
-        if (key === "bgm") { if (Storage.data.settings.bgm) Sound.startBGM(); else Sound.stopBGM(); }
-        this.syncToggles();
-    },
-    syncToggles() {
-        ['sfx', 'bgm', 'vibration'].forEach(k => {
-            const el = document.getElementById(`toggle-${k === 'vibration' ? 'vibrate' : k}`);
-            if (el) { if (Storage.data.settings[k]) el.classList.add("on"); else el.classList.remove("on"); }
-        });
-    }
-};
+const Player={
+xpForLevel(level){
+return 80+(level-1)*45;
+},
 
-/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-   12. BAŞLANGIÇ
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
-Storage.load();
-BackgroundEngine.init(resolveActiveTheme(Storage.data.maxUnlockedLevel, 0, "level"));
+addXP(amount){
+amount=Math.max(0,Math.floor(amount));
+const s=Storage.data.stats;
+
+s.xp+=amount;
+
+let leveled=false;
+
+while(s.xp>=this.xpForLevel(s.playerLevel)){
+s.xp-=this.xpForLevel(s.playerLevel);
+s.playerLevel++;
+leveled=true;
+
+const reward=5+s.playerLevel*2;
+Storage.data.coins+=reward;
+
+UI.toast(
+"⭐ Oyuncu Seviyesi "+s.playerLevel+
+"<br>🎁 +"+reward+" 🪙"
+);
+
+Sound.victory();
+}
+
+if(leveled)
+Storage.save();
+
 UI.updateMenuData();
-mainLoop();
+}
+};
+
+/* =========================================================
+BAŞARILAR
+========================================================= */
+
+const Achievements={
+
+init(){
+const a=Storage.data.achievements;
+
+ACHIEVEMENTS.forEach(def=>{
+if(!a[def.id])
+a[def.id]=false;
+});
+
+this.checkAll();
+},
+
+value(def){
+const s=Storage.data.stats;
+
+if(def.type==="rings") return s.totalRings;
+if(def.type==="coins") return s.totalCoins;
+if(def.type==="combo") return s.bestCombo;
+if(def.type==="level") return Storage.data.maxUnlockedLevel;
+if(def.type==="endless") return s.endlessBest;
+if(def.type==="tasks") return s.tasksCompleted;
+if(def.type==="shop") return s.shopPurchases;
+
+return 0;
+},
+
+checkAll(){
+const unlocked=[];
+
+ACHIEVEMENTS.forEach(def=>{
+if(Storage.data.achievements[def.id])
+return;
+
+if(this.value(def)>=def.target){
+this.unlock(def);
+unlocked.push(def);
+}
+});
+
+return unlocked;
+},
+
+unlock(def){
+Storage.data.achievements[def.id]=true;
+
+Storage.data.coins+=def.reward;
+
+let bonusText="";
+
+if(def.bonus){
+if(!Storage.data.unlockedItems.includes(def.bonus)){
+Storage.data.unlockedItems.push(def.bonus);
+
+const item=this.findItem(def.bonus);
+
+if(item)
+bonusText="<br>🎁 Hediye: "+item.icon+" "+item.name;
+}
+}
+
+UI.toast(
+"🏆 <b>"+def.title+"</b>"+
+"<br>+"+def.reward+" 🪙"+bonusText
+);
+
+Sound.victory();
+Storage.save();
+},
+
+findItem(id){
+for(const cat of Object.keys(ShopItems)){
+const item=ShopItems[cat].find(x=>x.id===id);
+if(item) return item;
+}
+return null;
+},
+
+recordRing(){
+Storage.data.stats.totalRings++;
+this.checkAll();
+},
+
+recordCoin(){
+Storage.data.stats.totalCoins++;
+this.checkAll();
+},
+
+recordCombo(combo){
+const s=Storage.data.stats;
+s.bestCombo=Math.max(s.bestCombo,combo);
+this.checkAll();
+},
+
+recordLevelComplete(){
+Storage.data.stats.levelsCompleted++;
+this.checkAll();
+},
+
+recordEndless(score){
+Storage.data.stats.endlessBest=Math.max(
+Storage.data.stats.endlessBest,
+score
+);
+this.checkAll();
+},
+
+recordTask(){
+Storage.data.stats.tasksCompleted++;
+Player.addXP(15);
+this.checkAll();
+},
+
+recordShop(){
+Storage.data.stats.shopPurchases++;
+Player.addXP(10);
+this.checkAll();
+}
+};
+
+/* =========================================================
+GÖREVLER
+========================================================= */
+
+const Tasks={
+
+progress(type,amount=1){
+let changed=false;
+
+Storage.data.tasks.forEach(t=>{
+if(t.done || t.type!==type)
+return;
+
+t.current=Math.min(
+t.target,
+t.current+amount
+);
+
+changed=true;
+
+if(t.current>=t.target)
+this.complete(t);
+});
+
+if(changed)
+Storage.save();
+
+UI.renderTasks();
+},
+
+setMax(type,value){
+let changed=false;
+
+Storage.data.tasks.forEach(t=>{
+if(t.done || t.type!==type)
+return;
+
+if(value>t.current){
+t.current=Math.min(t.target,value);
+changed=true;
+
+if(t.current>=t.target)
+this.complete(t);
+}
+});
+
+if(changed)
+Storage.save();
+
+UI.renderTasks();
+},
+
+complete(t){
+if(t.done) return;
+
+t.done=true;
+t.current=t.target;
+
+Storage.data.coins+=t.reward;
+
+Player.addXP(20);
+Achievements.recordTask();
+
+UI.toast(
+"🎯 <b>"+t.title+"</b>"+
+"<br>🎁 +"+t.reward+" 🪙"
+);
+
+Sound.victory();
+},
+
+sync(){
+const s=Storage.data.stats;
+
+this.setMax("comboMax",s.bestCombo);
+this.setMax("endless",s.endlessBest);
+this.setMax("levelReach",Storage.data.maxUnlockedLevel);
+}
+};
+
+/* =========================================================
+GÜNLÜK SİSTEM
+========================================================= */
+
+const Daily={
+
+today(){
+const d=new Date();
+return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+},
+
+ensure(){
+const today=this.today();
+
+if(Storage.data.daily.date===today)
+return;
+
+Storage.data.daily.date=today;
+
+const all=[
+{type:"rings",title:"Günlük Halka Avı",desc:"15 halka geç",target:15,reward:12},
+{type:"rings",title:"Günlük Usta",desc:"30 halka geç",target:30,reward:20},
+{type:"coin",title:"Günlük Coin",desc:"5 coin topla",target:5,reward:12},
+{type:"coin",title:"Coin Yağmuru",desc:"12 coin topla",target:12,reward:22},
+{type:"comboMax",title:"Seriyi Koru",desc:"5x combo yap",target:5,reward:15},
+{type:"comboMax",title:"Ateş Yak",desc:"8x combo yap",target:8,reward:25},
+{type:"levelComplete",title:"Bugünün Bölümü",desc:"1 bölüm tamamla",target:1,reward:15},
+{type:"endless",title:"Sonsuz Deneme",desc:"Serbest modda 15 skor yap",target:15,reward:20}
+];
+
+const shuffled=[...all].sort(()=>Math.random()-.5);
+
+Storage.data.daily.tasks=shuffled.slice(0,3).map((x,i)=>({
+...x,
+id:i+1,
+current:0,
+done:false
+}));
+
+Storage.data.daily.shop=[];
+Storage.save();
+},
+
+progress(type,amount=1){
+this.ensure();
+
+let changed=false;
+
+Storage.data.daily.tasks.forEach(t=>{
+if(t.done || t.type!==type)
+return;
+
+t.current=Math.min(t.target,t.current+amount);
+changed=true;
+
+if(t.current>=t.target){
+t.done=true;
+Storage.data.coins+=t.reward;
+Player.addXP(15);
+
+UI.toast(
+"🌞 Günlük görev tamamlandı!"+
+"<br>+"+t.reward+" 🪙"
+);
+
+Sound.victory();
+}
+});
+
+if(changed)
+Storage.save();
+
+UI.renderTasks();
+},
+
+setMax(type,value){
+this.ensure();
+
+Storage.data.daily.tasks.forEach(t=>{
+if(t.done || t.type!==type)
+return;
+
+t.current=Math.min(t.target,Math.max(t.current,value));
+
+if(t.current>=t.target){
+t.done=true;
+Storage.data.coins+=t.reward;
+Player.addXP(15);
+
+UI.toast(
+"🌞 Günlük görev tamamlandı!"+
+"<br>+"+t.reward+" 🪙"
+);
+}
+});
+
+Storage.save();
+UI.renderTasks();
+}
+};
+
+/* =========================================================
+MAĞAZA
+========================================================= */
+
+const Shop={
+
+tab:"balls",
+
+rarityClass(r){
+return r||"normal";
+},
+
+allItems(){
+return Object.values(ShopItems).flat();
+},
+
+find(id){
+return this.allItems().find(x=>x.id===id);
+},
+
+isUnlocked(id){
+return Storage.data.unlockedItems.includes(id);
+},
+
+setTab(tab){
+this.tab=tab;
+Sound.btn();
+UI.renderShop();
+},
+
+dailyItems(){
+Daily.ensure();
+
+if(
+!Storage.data.daily.shop ||
+Storage.data.daily.shop.length!==3
+){
+const pool=this.allItems().filter(
+x=>x.price>0
+);
+
+Storage.data.daily.shop=[
+...pool
+].sort(()=>Math.random()-.5)
+.slice(0,3)
+.map(x=>x.id);
+
+Storage.save();
+}
+
+return Storage.data.daily.shop
+.map(id=>this.find(id))
+.filter(Boolean);
+},
+
+dailyDiscount(item){
+const index=this.dailyItems()
+.findIndex(x=>x.id===item.id);
+
+if(index<0) return 0;
+
+return [25,35,50][index]||25;
+},
+
+price(item){
+const discount=this.dailyDiscount(item);
+
+if(discount)
+return Math.max(
+1,
+Math.floor(item.price*(1-discount/100))
+);
+
+return item.price;
+},
+
+buyOrSelect(category,id){
+Sound.btn();
+
+const item=ShopItems[category].find(x=>x.id===id);
+
+if(!item) return;
+
+if(this.isUnlocked(id)){
+Storage.data[
+category==="balls"?"selectedBall":
+category==="trails"?"selectedTrail":
+category==="themes"?"selectedTheme":
+"selectedBadge"
+]=id;
+
+Storage.save();
+UI.renderShop();
+UI.toast(item.icon+" "+item.name+" seçildi.");
+return;
+}
+
+const price=this.price(item);
+
+if(Storage.data.coins<price){
+UI.toast("🪙 Coin yetersiz.");
+Sound.error();
+return;
+}
+
+Storage.data.coins-=price;
+Storage.data.unlockedItems.push(id);
+
+Storage.data.stats.shopPurchases++;
+Player.addXP(10);
+Achievements.checkAll();
+
+Tasks.progress("shop",1);
+Daily.ensure();
+
+Storage.save();
+
+UI.toast(
+"🛍️ "+item.name+" açıldı!"+
+"<br>💎 "+RARITY[item.rarity]
+);
+
+UI.renderShop();
+}
+};
+
+/* =========================================================
+PARÇACIKLAR
+========================================================= */
+
+const FX={
+
+particles:[],
+
+burst(x,y,color,count=15){
+for(let i=0;i<count;i++){
+const a=Math.random()*Math.PI*2;
+const s=1+Math.random()*4;
+
+this.particles.push({
+x,y,
+vx:Math.cos(a)*s,
+vy:Math.sin(a)*s,
+life:35+Math.random()*25,
+max:60,
+size:2+Math.random()*3,
+color
+});
+}
+},
+
+trail(x,y,color,trail){
+const type=trail?.type||"dots";
+
+let c=color;
+let size=2;
+
+if(type==="rainbow")
+c="hsl("+((Date.now()/4)%360)+",90%,65%)";
+
+if(type==="fire")
+c=Math.random()>.5?"#ff7048":"#ffd05a";
+
+if(type==="lightning")
+c="#c8ffff";
+
+if(type==="comet")
+size=3.5;
+
+this.particles.push({
+x:x+(Math.random()-.5)*4,
+y:y+(Math.random()-.5)*4,
+vx:(Math.random()-.5)*.5,
+vy:(Math.random()-.5)*.5,
+life:type==="glow"?28:20,
+max:28,
+size,
+color:c
+});
+
+if(type==="plasma" && Math.random()<.35)
+this.burst(x,y,c,2);
+},
+
+update(){
+for(let i=this.particles.length-1;i>=0;i--){
+const p=this.particles[i];
+
+p.x+=p.vx;
+p.y+=p.vy;
+p.vy+=.025;
+p.life--;
+
+if(p.life<=0)
+this.particles.splice(i,1);
+}
+},
+
+draw(){
+this.particles.forEach(p=>{
+ctx.globalAlpha=Math.max(0,p.life/p.max);
+ctx.fillStyle=p.color;
+ctx.beginPath();
+ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+ctx.fill();
+});
+
+ctx.globalAlpha=1;
+}
+};
+
+/* =========================================================
+HALKA
+========================================================= */
+
+class Ring{
+
+constructor(y,diff,isBoss=false){
+this.y=y;
+this.x=W/2+(Math.random()-.5)*W*.4;
+this.radius=diff.gapRadius;
+this.gap=diff.gap;
+this.speed=diff.speed;
+this.coin=Math.random()<(
+Game.mode==="coin"?0.55:0.18
+);
+this.coinCollected=false;
+this.passed=false;
+this.dead=false;
+this.angle=Math.random()*Math.PI*2;
+this.rotation=(Math.random()-.5)*.012;
+this.moving=Math.random()<diff.movingChance;
+this.isBoss=isBoss;
+this.phase=Math.random()*10;
+}
+
+update(dt){
+this.y+=this.speed*dt;
+
+if(this.moving){
+this.x+=Math.sin(
+performance.now()/700+this.phase
+)*0.65*dt;
+
+this.x=Math.max(
+this.radius+20,
+Math.min(W-this.radius-20,this.x)
+);
+}
+
+this.angle+=this.rotation*dt;
+}
+
+draw(){
+const ball=Ball;
+const gapCenter=this.angle;
+const gapSize=this.gap;
+
+ctx.save();
+ctx.translate(this.x,this.y);
+ctx.rotate(this.angle);
+
+ctx.strokeStyle=this.isBoss?"#ff4778":"#55eaff";
+ctx.lineWidth=this.isBoss?7:5;
+
+ctx.shadowBlur=this.isBoss?25:13;
+ctx.shadowColor=ctx.strokeStyle;
+
+const start=gapSize/2;
+const end=Math.PI*2-gapSize/2;
+
+ctx.beginPath();
+ctx.arc(
+0,0,
+this.radius,
+start,
+end
+);
+ctx.stroke();
+
+ctx.shadowBlur=0;
+
+if(this.isBoss){
+ctx.strokeStyle="#ff9c4a";
+ctx.lineWidth=2;
+ctx.beginPath();
+ctx.arc(0,0,this.radius+7,0,Math.PI*2);
+ctx.stroke();
+}
+
+ctx.restore();
+
+if(
+this.coin &&
+!this.coinCollected &&
+Math.abs(
+ball.x-this.x
+)<this.radius*.35 &&
+Math.abs(
+ball.y-this.y
+)<this.radius*.35
+){
+this.collectCoin();
+}
+
+if(!this.passed &&
+ball.y<this.y-this.radius
+){
+this.checkPass();
+}
+}
+
+collectCoin(){
+this.coinCollected=true;
+
+const amount=Game.doubleCoin?2:1;
+
+Storage.data.coins+=amount;
+
+Achievements.recordCoin();
+Tasks.progress("coin",amount);
+Daily.progress("coin",amount);
+
+Player.addXP(3);
+
+FX.burst(this.x,this.y,"#ffd34e",12);
+Sound.coin();
+}
+
+checkPass(){
+this.passed=true;
+
+const dx=Math.abs(ball.x-this.x);
+
+if(dx<=this.radius-this.gap/2+ball.r*.65){
+Game.onRingPass(this);
+}else{
+Game.miss();
+}
+}
+}
+
+/* =========================================================
+TOP
+========================================================= */
+
+const Ball={
+
+x:0,
+y:0,
+r:15,
+vx:0,
+targetX:0,
+
+reset(){
+this.x=W/2;
+this.targetX=W/2;
+this.y=H*.78;
+this.vx=0;
+},
+
+update(dt){
+this.x+=(this.targetX-this.x)*.13;
+
+const trail=Shop.find(
+Storage.data.selectedTrail
+);
+
+const skin=Shop.find(
+Storage.data.selectedBall
+)||ShopItems.balls[0];
+
+FX.trail(
+this.x,
+this.y,
+skin.color,
+trail
+);
+},
+
+draw(){
+const skin=Shop.find(
+Storage.data.selectedBall
+)||ShopItems.balls[0];
+
+const g=ctx.createRadialGradient(
+this.x-5,this.y-5,2,
+this.x,this.y,this.r*1.5
+);
+
+g.addColorStop(0,"#fff");
+g.addColorStop(.25,skin.color);
+g.addColorStop(1,"#07111e");
+
+ctx.fillStyle=g;
+ctx.shadowBlur=22;
+ctx.shadowColor=skin.color;
+
+ctx.beginPath();
+ctx.arc(
+this.x,
+this.y,
+this.r,
+0,
+Math.PI*2
+);
+ctx.fill();
+
+ctx.shadowBlur=0;
+
+if(Game.shield){
+ctx.strokeStyle="#61f5ff";
+ctx.lineWidth=3;
+ctx.globalAlpha=.8;
+
+ctx.beginPath();
+ctx.arc(
+this.x,
+this.y,
+this.r+9,
+0,
+Math.PI*2
+);
+ctx.stroke();
+
+ctx.globalAlpha=1;
+}
+}
+};
+
+/* =========================================================
+OYUN
+========================================================= */
+
+const Game={
+
+running:false,
+mode:"level",
+level:1,
+score:0,
+combo:0,
+coinsEarned:0,
+
+lives:1,
+
+targetScore:12,
+rings:[],
+spawnTimer:0,
+
+shield:false,
+slow:false,
+doubleCoin:false,
+mistake:false,
+magnet:false,
+
+timeLeft:60,
+modeBest:0,
+
+lastTime:0,
+lastMiss:false,
+
+startLevel(level){
+level=Math.max(1,Math.min(28,level));
+
+Sound.init();
+
+this.mode="level";
+this.level=level;
+this.score=0;
+this.combo=0;
+this.coinsEarned=0;
+
+/* İSTENEN DEĞİŞİKLİK:
+Normal mod artık 3 değil 1 can. */
+this.lives=1;
+
+this.targetScore=
+12+Math.floor((level-1)*3.1);
+
+this.rings=[];
+this.spawnTimer=0;
+
+this.resetPowers();
+
+Ball.reset();
+
+Storage.data.currentLevel=level;
+Storage.data.stats.gamesPlayed++;
+
+UI.showHUD(true);
+UI.showScreen(null);
+
+UI.updateHUD();
+
+if(level%5===0){
+UI.showBoss(true);
+Sound.boss();
+}else{
+UI.showBoss(false);
+}
+
+this.running=true;
+this.lastTime=performance.now();
+
+requestAnimationFrame(this.loop.bind(this));
+},
+
+startEndless(){
+Sound.init();
+
+this.mode="endless";
+this.level=1;
+this.score=0;
+this.combo=0;
+this.coinsEarned=0;
+this.lives=1;
+
+this.rings=[];
+this.spawnTimer=0;
+this.resetPowers();
+
+Ball.reset();
+
+Storage.data.stats.gamesPlayed++;
+Storage.data.stats.modesPlayed++;
+
+UI.showHUD(true);
+UI.showScreen(null);
+UI.showBoss(false);
+
+this.running=true;
+this.lastTime=performance.now();
+
+requestAnimationFrame(this.loop.bind(this));
+},
+
+startMode(mode){
+Sound.init();
+
+this.mode=mode;
+this.level=1;
+this.score=0;
+this.combo=0;
+this.coinsEarned=0;
+
+this.rings=[];
+this.spawnTimer=0;
+this.resetPowers();
+
+Ball.reset();
+
+if(mode==="time")
+this.timeLeft=60;
+
+if(mode==="one")
+this.lives=1;
+
+if(mode==="fast")
+this.lives=1;
+
+if(mode==="coin")
+this.lives=1;
+
+Storage.data.stats.gamesPlayed++;
+Storage.data.stats.modesPlayed++;
+
+UI.showHUD(true);
+UI.showScreen(null);
+UI.showBoss(false);
+
+this.running=true;
+this.lastTime=performance.now();
+
+requestAnimationFrame(this.loop.bind(this));
+},
+
+resetPowers(){
+this.shield=false;
+this.slow=false;
+this.doubleCoin=false;
+this.mistake=false;
+this.magnet=false;
+UI.renderPowers();
+},
+
+difficulty(){
+let d=this.level;
+
+if(this.mode==="endless")
+d=Math.min(
+25,
+Math.floor(this.score/7)+1
+);
+
+if(this.mode==="fast")
+d+=7;
+
+if(this.mode==="time")
+d+=2;
+
+return d;
+},
+
+params(){
+const d=this.difficulty();
+
+let speed=
+3.55+d*.105;
+
+let gap=
+Math.max(
+W*.25,
+W*.39-d*1.9
+);
+
+let interval=
+Math.max(
+42,
+68-d*1.1
+);
+
+if(this.mode==="fast"){
+speed*=1.4;
+interval*=.72;
+}
+
+if(this.slow)
+speed*=.48;
+
+return{
+speed,
+gap,
+gapRadius:Math.min(W*.25,110),
+movingChance:d>=5?.28:0,
+spawnInterval:interval
+};
+},
+
+loop(now){
+if(!this.running)
+return;
+
+const dt=Math.min(
+2,
+(now-this.lastTime)/16.666
+);
+
+this.lastTime=now;
+
+this.update(dt);
+this.draw();
+
+requestAnimationFrame(this.loop.bind(this));
+},
+
+update(dt){
+if(this.mode==="time"){
+this.timeLeft-=dt/60;
+
+if(this.timeLeft<=0){
+this.timeLeft=0;
+this.endMode();
+return;
+}
+}
+
+Ball.update(dt);
+
+const p=this.params();
+
+this.spawnTimer-=dt;
+
+if(this.spawnTimer<=0){
+this.spawnTimer=p.spawnInterval;
+
+const boss=
+this.mode==="level" &&
+this.level%5===0;
+
+this.rings.push(
+new Ring(
+-p.gapRadius-30,
+p,
+boss
+)
+);
+}
+
+for(let i=this.rings.length-1;i>=0;i--){
+const r=this.rings[i];
+
+r.update(dt);
+
+if(
+r.y>H+r.radius+80 ||
+r.dead
+){
+this.rings.splice(i,1);
+}
+}
+
+FX.update();
+UI.updateHUD();
+
+if(
+this.mode==="level" &&
+this.score>=this.targetScore
+){
+this.victory();
+}
+},
+
+draw(){
+const theme=
+Themes[Storage.data.selectedTheme]||
+Themes.auto;
+
+const grad=ctx.createLinearGradient(
+0,0,0,H
+);
+
+grad.addColorStop(0,theme[0]);
+grad.addColorStop(1,theme[1]);
+
+ctx.fillStyle=grad;
+ctx.fillRect(0,0,W,H);
+
+/* yıldızlar */
+ctx.globalAlpha=.35;
+
+for(let i=0;i<50;i++){
+const x=(i*97)%W;
+const y=(i*61)%H;
+
+ctx.fillStyle="#fff";
+ctx.fillRect(
+x,
+(y+performance.now()*.008)%H,
+1.2,
+1.2
+);
+}
+
+ctx.globalAlpha=1;
+
+this.rings.forEach(r=>r.draw());
+
+FX.draw();
+Ball.draw();
+
+if(this.mode==="time"){
+ctx.fillStyle="#fff";
+ctx.font="bold 20px Arial";
+ctx.textAlign="center";
+ctx.fillText(
+"⏱️ "+Math.ceil(this.timeLeft),
+W/2,
+H-95
+);
+}
+},
+
+onRingPass(){
+this.score++;
+this.combo++;
+
+Achievements.recordRing();
+Achievements.recordCombo(this.combo);
+
+Tasks.progress("rings",1);
+Tasks.setMax("comboMax",this.combo);
+
+Daily.progress("rings",1);
+Daily.setMax("comboMax",this.combo);
+
+if(
+this.combo>=3 &&
+this.combo%3===0
+){
+Tasks.progress("comboHits",1);
+}
+
+const xp=
+2+
+Math.floor(this.combo/5);
+
+Player.addXP(xp);
+
+Sound.ring();
+
+if(this.combo>=3){
+UI.showCombo(this.combo);
+Sound.combo();
+}
+
+FX.burst(
+Ball.x,
+Ball.y,
+"#50eaff",
+8
+);
+
+if(this.mode==="endless"){
+Achievements.recordEndless(this.score);
+Tasks.setMax("endless",this.score);
+Daily.setMax("endless",this.score);
+}
+},
+
+miss(){
+if(this.lastMiss)
+return;
+
+this.lastMiss=true;
+
+setTimeout(()=>{
+this.lastMiss=false;
+},300);
+
+/* KALKAN */
+if(this.shield){
+this.shield=false;
+
+UI.toast("🛡️ Kalkan hatayı engelledi!");
+FX.burst(Ball.x,Ball.y,"#60efff",25);
+Sound.power();
+
+this.combo=0;
+UI.hideCombo();
+return;
+}
+
+/* HATA HAKKI */
+if(this.mistake){
+this.mistake=false;
+
+UI.toast("❤️ Hata hakkın kullanıldı!");
+FX.burst(Ball.x,Ball.y,"#ff6688",25);
+Sound.power();
+
+this.combo=0;
+UI.hideCombo();
+return;
+}
+
+/* Artık tek can */
+this.lives=0;
+this.combo=0;
+UI.hideCombo();
+
+Sound.error();
+
+if(Storage.data.settings.vibration &&
+navigator.vibrate){
+navigator.vibrate([100,60,180]);
+}
+
+this.gameOver();
+},
+
+victory(){
+if(!this.running)
+return;
+
+this.running=false;
+
+const completed=this.level;
+
+Storage.data.stats.levelsCompleted++;
+
+Achievements.recordLevelComplete();
+
+const next=Math.min(
+28,
+completed+1
+);
+
+Storage.data.maxUnlockedLevel=Math.max(
+Storage.data.maxUnlockedLevel,
+next
+);
+
+Storage.data.currentLevel=next;
+
+Tasks.progress("levelComplete",1);
+Tasks.setMax(
+"levelReach",
+Storage.data.maxUnlockedLevel
+);
+
+Daily.progress("levelComplete",1);
+
+let coinReward=
+4+
+Math.floor(completed/2);
+
+if(completed%5===0)
+coinReward+=10;
+
+Storage.data.coins+=coinReward;
+
+const xpReward=
+25+
+completed*2;
+
+Player.addXP(xpReward);
+
+if(completed%5===0){
+Storage.data.stats.bossWins++;
+}
+
+Storage.save();
+
+Sound.victory();
+UI.showBoss(false);
+UI.showHUD(false);
+
+document.getElementById("victoryLevel").textContent=
+"Seviye "+completed+
+(completed%5===0?" • 👑 BOSS":"");
+
+document.getElementById("victoryReward").textContent=
+"🪙 +"+coinReward;
+
+document.getElementById("victoryXP").textContent=
+"⭐ +"+xpReward+" XP";
+
+let bonus="";
+
+if(completed%5===0)
+bonus+="👑 Boss ödülü kazandın!<br>";
+
+if(
+completed===5||
+completed===10||
+completed===15||
+completed===20||
+completed===25||
+completed===28
+){
+const extra=10+completed;
+Storage.data.coins+=extra;
+
+bonus+=
+"🎁 Seviye ödülü: +"+
+extra+
+" 🪙<br>";
+}
+
+document.getElementById("victoryBonus").innerHTML=
+bonus||
+"🔥 Seri bonusların ve XP ödüllerin hesabına işlendi.";
+
+UI.showScreen("victory-screen");
+UI.updateMenuData();
+},
+
+nextLevel(){
+if(this.level>=28){
+UI.openLevels();
+return;
+}
+
+this.startLevel(this.level+1);
+},
+
+retry(){
+if(this.mode==="level")
+this.startLevel(this.level);
+else if(this.mode==="endless")
+this.startEndless();
+else
+this.startMode(this.mode);
+},
+
+gameOver(){
+this.running=false;
+
+UI.showHUD(false);
+UI.showBoss(false);
+
+document.getElementById("gameoverText").textContent=
+this.mode==="level"
+?"Halka kaçırıldı. Tek can hakkın bitti."
+:"Bu koşu sona erdi.";
+
+document.getElementById("gameoverScore").textContent=
+"Skor: "+this.score;
+
+UI.showScreen("gameover-screen");
+UI.updateMenuData();
+
+Storage.save();
+},
+
+endMode(){
+this.running=false;
+
+UI.showHUD(false);
+
+if(this.mode==="time"){
+Achievements.recordEndless(this.score);
+Tasks.setMax("endless",this.score);
+}
+
+Storage.data.endlessHighScore=Math.max(
+Storage.data.endlessHighScore,
+this.score
+);
+
+Storage.save();
+
+document.getElementById("gameoverText").textContent=
+"⏱️ Süre sona erdi!";
+
+document.getElementById("gameoverScore").textContent=
+"Skor: "+this.score;
+
+UI.showScreen("gameover-screen");
+},
+
+activatePower(type){
+if(!this.running)
+return;
+
+Storage.data.stats.powerUses++;
+Sound.power();
+
+if(type==="slow"){
+this.slow=true;
+
+UI.toast("🐌 Zaman yavaşlatıldı!");
+
+setTimeout(()=>{
+this.slow=false;
+UI.renderPowers();
+},6000);
+}
+
+if(type==="shield"){
+this.shield=true;
+UI.toast("🛡️ Kalkan aktif!");
+}
+
+if(type==="magnet"){
+this.magnet=true;
+UI.toast("🧲 Coin mıknatısı aktif!");
+
+setTimeout(()=>{
+this.magnet=false;
+UI.renderPowers();
+},8000);
+}
+
+if(type==="double"){
+this.doubleCoin=true;
+UI.toast("💰 2x Coin aktif!");
+
+setTimeout(()=>{
+this.doubleCoin=false;
+UI.renderPowers();
+},8000);
+}
+
+if(type==="mistake"){
+this.mistake=true;
+UI.toast("❤️ Ekstra hata hakkı aktif!");
+}
+
+Player.addXP(2);
+UI.renderPowers();
+}
+};
+
+/* =========================================================
+KONTROLLER
+========================================================= */
+
+function movePlayer(x){
+Ball.targetX=Math.max(
+Ball.r,
+Math.min(W-Ball.r,x)
+);
+}
+
+addEventListener("pointermove",e=>{
+if(Game.running)
+movePlayer(e.clientX);
+});
+
+addEventListener("pointerdown",e=>{
+if(Game.running){
+Sound.init();
+movePlayer(e.clientX);
+}
+});
+
+addEventListener("keydown",e=>{
+if(!Game.running)
+return;
+
+if(e.key==="ArrowLeft")
+movePlayer(Ball.targetX-70);
+
+if(e.key==="ArrowRight")
+movePlayer(Ball.targetX+70);
+
+if(e.key==="1")
+Game.activatePower("slow");
+
+if(e.key==="2")
+Game.activatePower("shield");
+
+if(e.key==="3")
+Game.activatePower("magnet");
+
+if(e.key==="4")
+Game.activatePower("double");
+
+if(e.key==="5")
+Game.activatePower("mistake");
+});
+
+/* =========================================================
+UI
+========================================================= */
+
+const UI={
+
+showScreen(id){
+document.querySelectorAll(".screen")
+.forEach(s=>s.classList.remove("active"));
+
+if(id)
+document.getElementById(id)?.classList.add("active");
+
+if(id){
+this.showHUD(false);
+this.showBoss(false);
+}
+},
+
+openLevels(){
+Sound.btn();
+this.renderLevelGrid();
+this.showScreen("level-select-menu");
+},
+
+openModes(){
+Sound.btn();
+this.showScreen("modes-menu");
+},
+
+openShop(){
+Sound.btn();
+this.renderShop();
+this.showScreen("shop-menu");
+},
+
+openTasks(){
+Sound.btn();
+this.renderTasks();
+this.showScreen("tasks-menu");
+},
+
+openAchievements(){
+Sound.btn();
+this.renderAchievements();
+this.showScreen("achievements-menu");
+},
+
+openProfile(){
+Sound.btn();
+this.renderProfile();
+this.showScreen("profile-menu");
+},
+
+openStats(){
+Sound.btn();
+this.renderStats();
+this.showScreen("stats-menu");
+},
+
+openSettings(){
+Sound.btn();
+this.renderSettings();
+this.showScreen("settings-menu");
+},
+
+showHUD(show){
+document.getElementById("hud").style.display=
+show?"block":"none";
+
+document.getElementById("powerbar").style.display=
+show?"flex":"none";
+},
+
+showBoss(show){
+document.getElementById("bossBanner").style.display=
+show?"block":"none";
+},
+
+updateHUD(){
+document.getElementById("hudScore").textContent=
+Game.score;
+
+document.getElementById("hudCoins").textContent=
+Storage.data.coins;
+
+document.getElementById("hudCombo").textContent=
+Game.combo;
+
+document.getElementById("hudLives").textContent=
+Game.lives;
+
+document.getElementById("hudPlayerLevel").textContent=
+Storage.data.stats.playerLevel;
+
+document.getElementById("hudXP").textContent=
+Storage.data.stats.xp;
+
+let mode="BÖLÜM "+Game.level;
+
+if(Game.mode==="endless")
+mode="♾️ SERBEST";
+
+if(Game.mode==="time")
+mode="⏱️ ZAMANA KARŞI";
+
+if(Game.mode==="one")
+mode="💀 TEK CAN";
+
+if(Game.mode==="fast")
+mode="⚡ HIZLI";
+
+if(Game.mode==="coin")
+mode="🪙 COIN";
+
+document.getElementById("hudMode").textContent=mode;
+
+this.renderPowers();
+},
+
+updateMenuData(){
+const d=Storage.data;
+
+document.getElementById("menuCoins").textContent=
+d.coins;
+
+document.getElementById("menuPlayerLevel").textContent=
+d.stats.playerLevel;
+
+document.getElementById("menuXP").textContent=
+d.stats.xp+
+" / "+
+Player.xpForLevel(d.stats.playerLevel);
+
+document.getElementById("menuXPFill").style.width=
+Math.min(
+100,
+d.stats.xp/
+Player.xpForLevel(d.stats.playerLevel)*100
+)+"%";
+
+this.renderSettings();
+},
+
+showCombo(combo){
+const el=document.getElementById("combo");
+
+el.textContent=
+"🔥 x"+combo+" COMBO!";
+
+el.classList.add("show");
+
+clearTimeout(this.comboTimer);
+
+this.comboTimer=setTimeout(()=>{
+if(combo===Game.combo)
+el.classList.remove("show");
+},850);
+},
+
+hideCombo(){
+document.getElementById("combo")
+.classList.remove("show");
+},
+
+toast(text){
+const el=document.getElementById("toast");
+
+el.innerHTML=text;
+el.classList.add("show");
+
+clearTimeout(this.toastTimer);
+
+this.toastTimer=setTimeout(()=>{
+el.classList.remove("show");
+},2300);
+},
+
+renderLevelGrid(){
+const grid=document.getElementById("levelGrid");
+grid.innerHTML="";
+
+for(let i=1;i<=28;i++){
+const b=document.createElement("button");
+
+const unlocked=
+i<=Storage.data.maxUnlockedLevel;
+
+b.className=
+"level-btn"+
+(!unlocked?" locked":"")+
+(i%5===0?" boss":"");
+
+b.textContent=
+i%5===0
+?"👑 "+i
+:""+i;
+
+if(unlocked){
+b.onclick=()=>{
+Sound.btn();
+Game.startLevel(i);
+};
+}else{
+b.textContent+=" 🔒";
+}
+
+grid.appendChild(b);
+}
+},
+
+renderShop(){
+const grid=document.getElementById("shopGrid");
+const daily=document.getElementById("dailyShop");
+const coins=document.getElementById("shopCoins");
+
+coins.textContent=Storage.data.coins;
+
+const dailyItems=Shop.dailyItems();
+
+daily.innerHTML=
+"<b>🌞 Günün Ürünleri</b><br>"+
+"<span style='color:#879ab0;font-size:12px'>"+
+dailyItems.map(x=>
+x.icon+" "+x.name+
+" (-"+Shop.dailyDiscount(x)+"%)"
+).join(" • ")+
+"</span>";
+
+grid.innerHTML="";
+
+ShopItems[this.shopTab||Shop.tab].forEach(item=>{
+const unlocked=Shop.isUnlocked(item.id);
+
+const selected=
+(
+this.shopTab==="balls"?
+Storage.data.selectedBall:
+this.shopTab==="trails"?
+Storage.data.selectedTrail:
+this.shopTab==="themes"?
+Storage.data.selectedTheme:
+Storage.data.selectedBadge
+)===item.id;
+
+const price=Shop.price(item);
+const discount=Shop.dailyDiscount(item);
+
+const card=document.createElement("div");
+
+card.className=
+"card shop-item "+
+Shop.rarityClass(item.rarity)+
+(selected?" selected":"")+
+(!unlocked?" locked":"");
+
+card.innerHTML=`
+<div>
+<div class="item-icon">${item.icon}</div>
+<div class="item-name">${item.name}</div>
+<span class="badge ${item.rarity}">
+${RARITY[item.rarity]}
+</span>
+</div>
+
+<div>
+${
+unlocked
+?"<div style='color:#59ffad;font-size:12px'>✓ Açık</div>"
+:`
+<div class="item-price">
+🪙 ${price}
+${
+discount
+?` <span class="discount">-%${discount}</span>`
+:""
+}
+</div>
+`
+}
+
+<button style="width:100%;margin-top:7px">
+${
+unlocked
+?(selected?"✓ Seçili":"Seç")
+:"Satın Al"
+}
+</button>
+</div>
+`;
+
+card.querySelector("button").onclick=()=>{
+Shop.buyOrSelect(
+this.shopTab||Shop.tab,
+item.id
+);
+};
+
+grid.appendChild(card);
+});
+},
+
+renderTasks(){
+Daily.ensure();
+
+const list=document.getElementById("taskList");
+
+const completed=
+Storage.data.tasks.filter(x=>x.done).length;
+
+document.getElementById("dailyTasksInfo").innerHTML=
+"<b>🌞 Günlük Görevler</b><br>"+
+"<span style='color:#8da0b6;font-size:12px'>"+
+"Bugün için 3 özel görev var. Tamamlananlar her gün yenilenir."
++"</span>";
+
+list.innerHTML="";
+
+const dailyTitle=document.createElement("div");
+dailyTitle.className="section-title";
+dailyTitle.textContent="🌞 BUGÜN";
+list.appendChild(dailyTitle);
+
+Storage.data.daily.tasks.forEach(t=>{
+list.appendChild(
+this.taskCard(t,true)
+);
+});
+
+const title=document.createElement("div");
+title.className="section-title";
+title.textContent=
+"📋 GENEL GÖREVLER • "+
+completed+"/"+Storage.data.tasks.length;
+
+list.appendChild(title);
+
+Storage.data.tasks.forEach(t=>{
+list.appendChild(
+this.taskCard(t,false)
+);
+});
+},
+
+taskCard(t,daily){
+const div=document.createElement("div");
+
+div.className=
+"card "+(t.done?"done":"");
+
+const pct=
+Math.min(100,t.current/t.target*100);
+
+div.innerHTML=`
+<div class="card-head">
+<div>
+<div class="card-title">
+${t.done?"✅ ":""}${t.title}
+</div>
+<div class="card-desc">
+${t.desc}
+</div>
+</div>
+
+<div class="reward">
+🪙 +${t.reward}
+</div>
+</div>
+
+<div class="progress">
+<div style="width:${pct}%"></div>
+</div>
+
+<div style="font-size:11px;color:#7890aa;margin-top:6px">
+${t.current} / ${t.target}
+</div>
+`;
+
+return div;
+},
+
+renderAchievements(){
+const list=document.getElementById("achievementList");
+
+const done=ACHIEVEMENTS.filter(
+x=>Storage.data.achievements[x.id]
+).length;
+
+document.getElementById("achievementSummary").innerHTML=
+"🏆 <b>"+done+"/"+ACHIEVEMENTS.length+
+"</b> başarı tamamlandı."+
+"<br><span style='font-size:12px;color:#8194aa'>"+
+"Başarılar coin ve bazen özel ürün kazandırır.</span>";
+
+list.innerHTML="";
+
+ACHIEVEMENTS.forEach(a=>{
+const unlocked=
+Storage.data.achievements[a.id];
+
+const value=
+Math.min(
+a.target,
+Achievements.value(a)
+);
+
+const pct=
+Math.min(100,value/a.target*100);
+
+const card=document.createElement("div");
+
+card.className=
+"card "+(unlocked?"done":"");
+
+card.innerHTML=`
+<div class="card-head">
+<div>
+<div class="card-title">
+${a.icon} ${a.title}
+</div>
+<div class="card-desc">
+${a.desc}
+</div>
+<span class="badge ${a.rank==="Efsanevi"?"legendary":a.rank==="Altın"?"epic":a.rank==="Gümüş"?"rare":"normal"}">
+${a.rank}
+</span>
+</div>
+
+<div class="reward">
+🪙 +${a.reward}
+</div>
+</div>
+
+<div class="progress">
+<div style="width:${pct}%"></div>
+</div>
+
+<div style="font-size:11px;color:#7890aa;margin-top:6px">
+${
+unlocked
+?"✅ TAMAMLANDI"
+:value+" / "+a.target
+}
+</div>
+
+${
+a.bonus
+?"<div style='font-size:11px;color:#d4b2ff;margin-top:6px'>🎁 Özel ürün ödülü</div>"
+:""
+}
+`;
+
+list.appendChild(card);
+});
+},
+
+renderProfile(){
+const s=Storage.data.stats;
+
+let rank="Bronz";
+let rankClass="normal";
+
+if(s.playerLevel>=20){
+rank="Elmas";
+rankClass="legendary";
+}else if(s.playerLevel>=15){
+rank="Platin";
+rankClass="epic";
+}else if(s.playerLevel>=10){
+rank="Altın";
+rankClass="epic";
+}else if(s.playerLevel>=5){
+rank="Gümüş";
+rankClass="rare";
+}
+
+const badge=document.getElementById("profileRank");
+badge.textContent=rank.toUpperCase();
+badge.className="badge "+rankClass;
+
+document.getElementById("profileLevel").textContent=
+s.playerLevel;
+
+document.getElementById("profileXP").textContent=
+s.xp+" / "+Player.xpForLevel(s.playerLevel)+" XP";
+
+document.getElementById("profileXPFill").style.width=
+s.xp/Player.xpForLevel(s.playerLevel)*100+"%";
+
+document.getElementById("profileStats").innerHTML=`
+<div class="stat">
+<small>⭕ Toplam Halka</small>
+<strong>${s.totalRings}</strong>
+</div>
+
+<div class="stat">
+<small>🪙 Toplam Coin</small>
+<strong>${s.totalCoins}</strong>
+</div>
+
+<div class="stat">
+<small>🔥 En Yüksek Combo</small>
+<strong>${s.bestCombo}x</strong>
+</div>
+
+<div class="stat">
+<small>🎮 Tamamlanan Bölüm</small>
+<strong>${s.levelsCompleted}</strong>
+</div>
+
+<div class="stat">
+<small>🏆 Başarılar</small>
+<strong>${
+Object.values(Storage.data.achievements)
+.filter(Boolean).length
+}</strong>
+</div>
+
+<div class="stat">
+<small>🎯 Görevler</small>
+<strong>${s.tasksCompleted}</strong>
+</div>
+`;
+},
+
+renderStats(){
+const s=Storage.data.stats;
+
+document.getElementById("statsGrid").innerHTML=`
+<div class="stat">
+<small>🎮 Oynanan Oyun</small>
+<strong>${s.gamesPlayed}</strong>
+</div>
+
+<div class="stat">
+<small>⭕ Geçilen Halka</small>
+<strong>${s.totalRings}</strong>
+</div>
+
+<div class="stat">
+<small>🪙 Toplanan Coin</small>
+<strong>${s.totalCoins}</strong>
+</div>
+
+<div class="stat">
+<small>🔥 En Yüksek Combo</small>
+<strong>${s.bestCombo}x</strong>
+</div>
+
+<div class="stat">
+<small>♾️ Serbest Rekor</small>
+<strong>${s.endlessBest}</strong>
+</div>
+
+<div class="stat">
+<small>🏆 Bölüm Tamamlama</small>
+<strong>${s.levelsCompleted}</strong>
+</div>
+
+<div class="stat">
+<small>👑 Boss Zaferi</small>
+<strong>${s.bossWins}</strong>
+</div>
+
+<div class="stat">
+<small>⚡ Kullanılan Güç</small>
+<strong>${s.powerUses}</strong>
+</div>
+
+<div class="stat">
+<small>🛍️ Açılan Ürün</small>
+<strong>${s.shopPurchases}</strong>
+</div>
+
+<div class="stat">
+<small>⭐ Oyuncu Seviyesi</small>
+<strong>${s.playerLevel}</strong>
+</div>
+`;
+},
+
+renderSettings(){
+const settings=Storage.data.settings;
+
+const set=(id,val)=>{
+const el=document.getElementById(id);
+if(!el)return;
+
+el.textContent=val?"AÇIK":"KAPALI";
+el.className=val?"on":"off";
+};
+
+set("setSfx",settings.sfx);
+set("setBgm",settings.bgm);
+set("setVibration",settings.vibration);
+},
+
+renderPowers(){
+const bar=document.getElementById("powerbar");
+
+if(!Game.running){
+bar.style.display="none";
+return;
+}
+
+bar.style.display="flex";
+
+const powers=[
+["slow","🐌","Yavaş"],
+["shield","🛡️","Kalkan"],
+["magnet","🧲","Mıknatıs"],
+["double","💰","2x Coin"],
+["mistake","❤️","Hata"]
+];
+
+bar.innerHTML=powers.map((p,i)=>`
+<button class="power-btn" onclick="Game.activatePower('${p[0]}')">
+${p[1]}
+<small>${p[2]}</small>
+<small>${i+1}</small>
+</button>
+`).join("");
+}
+};
+
+/* =========================================================
+AYARLAR
+========================================================= */
+
+const Settings={
+
+toggle(key){
+Storage.data.settings[key]=
+!Storage.data.settings[key];
+
+Storage.save();
+UI.renderSettings();
+
+if(key==="sfx")
+Sound.init();
+
+if(key==="vibration" &&
+Storage.data.settings.vibration &&
+navigator.vibrate){
+navigator.vibrate(40);
+}
+}
+};
+
+/* =========================================================
+ANA MENÜ / GÜNLÜK MAĞAZA / BAŞLANGIÇ
+========================================================= */
+
+Storage.load();
+Daily.ensure();
+Achievements.init();
+Tasks.sync();
+
+UI.updateMenuData();
+UI.renderLevelGrid();
+UI.renderTasks();
+UI.renderAchievements();
+UI.renderShop();
+UI.renderProfile();
+UI.renderStats();
+UI.renderSettings();
+
+/* =========================================================
+ARKA PLAN ANİMASYONU
+========================================================= */
+
+function idleBackground(){
+if(Game.running){
+requestAnimationFrame(idleBackground);
+return;
+}
+
+const theme=
+Themes[Storage.data.selectedTheme]||
+Themes.auto;
+
+const grad=ctx.createLinearGradient(
+0,0,0,H
+);
+
+grad.addColorStop(0,theme[0]);
+grad.addColorStop(1,theme[1]);
+
+ctx.fillStyle=grad;
+ctx.fillRect(0,0,W,H);
+
+ctx.globalAlpha=.25;
+
+for(let i=0;i<35;i++){
+const x=(i*127)%W;
+const y=(i*73+performance.now()*.01)%H;
+
+ctx.fillStyle="#fff";
+ctx.beginPath();
+ctx.arc(x,y,1.3,0,Math.PI*2);
+ctx.fill();
+}
+
+ctx.globalAlpha=1;
+
+requestAnimationFrame(idleBackground);
+}
+
+idleBackground();
 </script>
+
 </body>
 </html>
