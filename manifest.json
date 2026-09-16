@@ -1,16 +1,13 @@
 {
-  "background_color": "#000000",
-  "package_id": "com.neonring.oyun",
-  "dir": "ltr",
-  "display": "standalone",
-  "name": "neonring",
-  "orientation": "any",
-  "scope": "/Neon-Ring/",
-  "short_name": "neonring",
+  "name": "Sferis: Halka Yolculuğu",
+  "short_name": "Sferis",
+  "description": "Halkalardan geçerek en yüksek skora ulaşmaya çalıştığın heyecan verici bir beceri oyunu.",
   "start_url": "/Neon-Ring/",
-  "theme_color": "#000000",
-  "description": "An exciting skill game where you try to get the highest score by passing through neon rings.",
- "icons": [
+  "display": "standalone",
+  "background_color": "#04060b",
+  "theme_color": "#00f0ff",
+  "orientation": "any",
+  "icons": [
     {
       "src": "icon.png",
       "sizes": "192x192",
@@ -24,3 +21,4 @@
       "purpose": "any maskable"
     }
   ]
+}
