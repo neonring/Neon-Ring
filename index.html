@@ -1337,6 +1337,16 @@ Storage.load();
 BackgroundEngine.init(resolveActiveTheme(Storage.data.maxUnlockedLevel, 0, "level"));
 UI.updateMenuData();
 mainLoop();
+ // Oyuna ilk dokunulduğunda veya başladığında tam ekran yapar
+function requestFullscreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {});
+    }
+}
+
+// Oyundaki ilk buton tıklamasına veya dokunmaya bunu bağlayabilirsin
+window.addEventListener('click', requestFullscreen, { once: true });
+window.addEventListener('touchstart', requestFullscreen, { once: true }); 
 </script>
 </body>
 </html>
